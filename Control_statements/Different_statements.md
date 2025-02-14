@@ -86,3 +86,29 @@ switch (day) {
 }
 console.log(DayName)
 ```
+
+PRACTICE PROBLEM BASED UPON SWITCH STATEMENT
+Program to calculate the average marks of the students and then print the corresponding grade.
+```
+let marks = [['Rahul', 80], ['Rohan', 95], ['Sita', 82], ['Mohit', 86], ['Ram', 90]]
+let n = marks.length
+let totalmarks=0
+for(let i=0; i<marks.length; i++){
+  totalmarks += marks[i][1]
+}
+let Avg = totalmarks/n
+console.log("Average Marks = " + Avg)
+
+if(Avg>90){
+  console.log("Grade : A")
+}
+else if(Avg>80 && Avg<90){
+  console.log("Grade : B")
+}
+else if(Avg>70 && Avg<80){
+  console.log("Grade : C")
+}
+else{
+  console.log("Grade : D")
+} 
+```
