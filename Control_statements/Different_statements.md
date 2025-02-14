@@ -88,6 +88,7 @@ console.log(DayName)
 ```
 
 PRACTICE PROBLEM BASED UPON SWITCH STATEMENT
+
 Program to calculate the average marks of the students and then print the corresponding grade.
 ```
 let marks = [['Rahul', 80], ['Rohan', 95], ['Sita', 82], ['Mohit', 86], ['Ram', 90]]
