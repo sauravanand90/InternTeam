@@ -1,4 +1,4 @@
-**1.For loop**
+**1. For loop**
 
 The for loop is used when the number of iterations are known like for how many times the given block of code will be executed.
 
@@ -17,7 +17,7 @@ for(let i=0; i<arr.length; i++){
 console.log(even)
 console.log(odd)
 ``` 
-**2.While Loop**
+**2. While Loop**
 
 This loop executes a block of code until a given condition is true. In this, condition is checked first and on the basis of that the code is executed.
 
@@ -32,7 +32,7 @@ console.log("The sum is " + sum)
 ```
 In the above example, parseInt is used to convert the input into number in order to add otherwise it will be concatenated.
 
-**3.Do-while Loop**
+**3. Do-while Loop**
 
 This loop executes a block of code repeatedly based upon a given condition. It is similar to while loop but the only difference is that this loop guarantees that the code block is executed atleast once regardless of whether the condition is fulfilled or not.
 
@@ -45,7 +45,7 @@ do{
 }while(num>=0)
 console.log("The sum is " + sum)
 ```
-**4.For-in Loop**
+**4. For-in Loop**
 
 This loop iterates over the properties of an object. It allows to access each key property of an object. It is not recommended to access the properties of an array.
 ```
