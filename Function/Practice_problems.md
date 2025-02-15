@@ -58,6 +58,7 @@ outerFunction("Hello from the outer function!")
 ```
 
 **NOTE**
+
 Scope: The inner function can access variables from the outer function because of JavaScript's lexical scoping. However, the outer function cannot access variables inside the inner function.
 Closures: When the inner function "remembers" the environment (variables) in which it was created, this behavior is known as a closure. This allows the inner function to access variables from the outer function even if it's called outside of its original scope.
 ```
