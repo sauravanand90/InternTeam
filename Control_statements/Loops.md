@@ -62,7 +62,7 @@ let value = Object.values(details)
 console.log(value)         //Directly prints the array of values
 
 Object.entries(details).forEach(([key, value]) => {
-    console.log(`${key}: ${value}`)                 // can also be written as -- console.log(key + ": " + details[key])  OR                                                                                                console.log(key + ": " + value)       
+    console.log(`${key}: ${value}`)                 // can also be written as -- console.log(key + ": " + details[key])  OR console.log(key + ": " + value)       
 })
 ```
 The ($) sign in the code is used inside template literals, which are enclosed by backticks(`). Template literals allow for string interpolation, meaning we can embed variables directly inside a string without the need of string concatenation.
