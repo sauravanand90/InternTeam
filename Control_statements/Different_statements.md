@@ -113,3 +113,23 @@ else{
   console.log("Grade : D")
 } 
 ```
+Program to find the sign of product of three numbers.
+```
+let a = 7
+let b = -5
+let c = 2
+function getSign(value){
+  if(value>0){
+    return "+"
+  }else if(value<0){
+    return "-"
+  }else{
+    return 0
+  }
+}
+let SignA = getSign(a)
+let SignB = getSign(b)
+let SignC = getSign(c)
+let sign = (SignA==SignB && SignB==SignC) ? "+" : "-"
+console.log("Sign of product of three numbers is " + sign)
+```
