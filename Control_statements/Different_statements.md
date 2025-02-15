@@ -1,4 +1,4 @@
-IF STATEMENT
+**1. IF STATEMENT**
 
 In JS or other programming languages, if statement is used to check whether a given condition is true and if the condition is true then a block of code is executed.
 ```
@@ -8,7 +8,7 @@ if(age>18){
 }
 ```
 
-IF-ELSE STATEMENT
+**2. IF-ELSE STATEMENT**
 
 In if-else statement, a condition is checked and if the condition is true then a block of code is executed otherwise the code written in else part is executed.
 ```
@@ -21,7 +21,7 @@ else{
 }
 ```
 
-IF-ELSE IF LADDER STATEMENT
+**3. IF-ELSE IF LADDER STATEMENT**
 
 This statement is used when there are multiple conditions present. The if statements are executed from top and as soon as the condition becomes true, the statement associated with that is executed and the rest of the conditions are left. If no condition becomes true then statement in else block is executed.
 
@@ -39,7 +39,7 @@ for (let i = 0; i <= 20; i++) {
 } 
 ```
 
-NESTED-IF STATEMENT
+**4. NESTED-IF STATEMENT**
 
 In this type of statement, another if condition is nested within a if condition.
 ```
@@ -53,7 +53,7 @@ if(a>10){
 }
 ```
 
-SWITCH STATEMENT
+**5. SWITCH STATEMENT**
 
 The switch statement executes a block of code based upon the matching cases. It is an alternative to long if-else cahins as it improves readability. In this, expression is evaluated and once a match is found, the corresponding block of code following the case is executed. Once the code is executed, the break statement ends the switch statement. If the break statement is not used then the rest of the cases will also be evaluated. If none of the cases is matched then the execution jumps to the default case if present. The default case is optional.
 
