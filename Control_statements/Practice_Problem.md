@@ -1,4 +1,4 @@
-**1. Define three variables for the LaunchCode shuttle---one for the starting fuel level, another for the number of astronauts aboard, and the third for the altitude the shuttle reaches.
+1. Define three variables for the LaunchCode shuttle---one for the starting fuel level, another for the number of astronauts aboard, and the third for the altitude the shuttle reaches.
 
 Construct while loops to do the following:
 
@@ -12,7 +12,7 @@ After the loops complete, output the result with the phrase, The shuttle gained 
 
 If the altitude is 2000 km or higher, add "Orbit achieved!"
 
-Otherwise add, "Failed to reach orbit."**
+Otherwise add, "Failed to reach orbit."
 ```
 let fuellevel=0, numast=0, alti=0
 while(fuellevel<5000 || fuellevel>30000){
