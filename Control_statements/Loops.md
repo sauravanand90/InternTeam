@@ -47,7 +47,7 @@ console.log("The sum is " + sum)
 ```
 **For-in Loop**
 
-This loop iterates over the properties of an object. It allows to access each key property of an object.
+This loop iterates over the properties of an object. It allows to access each key property of an object. It is not recommended to access the properties of an array.
 ```
 let details = {
     name: "Rahul",
@@ -65,4 +65,4 @@ Object.entries(details).forEach(([key, value]) => {
     console.log(`${key}: ${value}`)                 // can also be written as -- console.log(key + ": " + details[key])  OR console.log(key + ": " + value)       
 })
 ```
-The ($) sign in the code is used inside template literals, which are enclosed by backticks(`). Template literals allow for string interpolation, meaning we can embed variables directly inside a string without the need of string concatenation.
+The ($) sign in the code is used inside template literals, which are enclosed by backticks(`). Template literals allow for string interpolation, meaning we can embed variables directly inside a string without the need of string concatenation. String interpolation is the process of embedding expressions inside a string.
