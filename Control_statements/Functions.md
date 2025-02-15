@@ -26,3 +26,9 @@ function getSum(a,b,c){
 let ans = getSum(1,2,3)
 console.log("Print Sum: ",ans)
 ```
+```
+let getMultiplication = function (a,b) {
+    return a*b
+}
+console.log(getMultiplication(2,10))
+```
