@@ -9,6 +9,8 @@ A closure is the combination of a function bundled together with references to i
 **Lexical scoping**
 
 Lexical scoping means that a function’s scope is determined by the location where it is defined in the code, not where it is invoked. This concept defines the rules for how variables are accessible to functions based on their position in the source code.
+
+//understood?
 ```
 function outer(){
     let username = "Ramesh"
