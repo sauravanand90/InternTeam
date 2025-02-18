@@ -1,0 +1,6 @@
+//to convert farenheit to celsius 
+
+function toCelsius(farenheit) {
+    return (5/9)*(farenheit-32);
+}
+console.log(toCelsius(77));
