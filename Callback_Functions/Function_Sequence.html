@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Function Sequence</h2>
+    <p>The result of the calculation is </p>
+    <p id="demo"></p>
+    <script>
+        function myDisplayer(some) {
+            document.getElementById("demo").innerHTML = some
+        }
+
+        //Using Callback
+        function myCalculator(a, b, sumCallback) {        
+            let sum = a + b
+            sumCallback(sum)
+        }
+        myCalculator(5, 5, myDisplayer)
+
+        // function myCalculator(a, b) {
+        //     let sum = a + b
+        //     return sum
+        // }
+        // let result = myCalculator(5, 5)
+        // myDisplayer(result)
+    </script>
+</body>
+</html>

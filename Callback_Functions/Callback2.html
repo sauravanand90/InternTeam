@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Callback Functions</h1>
+    <p id="demo"></p>
+    <script>
+        let myNumbers = [4, 1, -2, -7, 5, 9, -6]
+        let posNumbers = removeNeg(myNumbers, check)
+        document.getElementById("demo").innerHTML = posNumbers
+        function check(x) {
+            return x >= 0
+        }
+        function removeNeg(numbers, callback) {
+            let array = [];
+            for (let i = 0; i < numbers.length; i++) {
+                if (callback(numbers[i])) {
+                    array.push(numbers[i]);
+                }
+            }
+            return array;
+        }
+    </script>
+</body>
+</html>
