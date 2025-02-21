@@ -14,8 +14,9 @@ let myPromise=new Promise(function(myResolve , myReject) {
         myReject("error");
 });
 myPromise.then(
-  function (value) {
-      displayer(value); },
+    function (value) {
+        displayer(value); 
+    },
     function(error){
-    displayer(error);}
-);
+        displayer(error);
+});
