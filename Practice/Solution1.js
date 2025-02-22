@@ -1,18 +1,18 @@
-let arr1 = [1, 2, 3, 4, 5]
-let arr2 = [10, 50, 40, 80]
-
-function MaxMin(arr) {
-    let max = Number.MIN_SAFE_INTEGER
-    let min = Number.MAX_SAFE_INTEGER
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i] >= max) {
-            max = arr[i]
+function Pyramid(n) {
+    for (let i = n; i >= 0; i--) {
+        let row = "" 
+        for (let j = 1; j <= i; j++) {
+            if (i == n || i == 1 || j == 1 || j == i){
+                row += "*" 
+            }
+            else{
+                row += " "
+            }
         }
-        if (arr[i] <= min) {
-            min = arr[i]
-        }
+        console.log(row)
     }
-    console.log(max, min)
 }
-MaxMin(arr1)
-MaxMin(arr2)
+Pyramid(5)
+Pyramid(4)
+Pyramid(3)
+Pyramid(2)
