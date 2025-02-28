@@ -2,12 +2,12 @@ function wave_matrix(arr)
 {
     for(let j=0;j<arr.length;j++)
         {
-            if(j%2==0)
+            if(j%2==0)// even column numbers print from top to bottom
             {
                 for(let i=0;i<arr.length;i++)
                     process.stdout.write(arr[i][j]+" ");
             }
-            else
+            else// odd column numbers go from bottom to up
             {
                 for(let i=arr.length-1;i>=0;i--)
                     process.stdout.write(arr[i][j]+" ");

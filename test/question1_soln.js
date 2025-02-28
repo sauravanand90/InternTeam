@@ -8,7 +8,7 @@ function hollow_pyramid(n){
                     else
                         process.stdout.write(" ");
                 }
-           process.stdout.write("\n");//console.log("\n"): alone cannot take to next lne so use process.stdout.write
+           process.stdout.write("\n");//console.log("\n"): alone cannot take to next line so use process.stdout.write
         }
     process.stdout.write("\n");
 }
