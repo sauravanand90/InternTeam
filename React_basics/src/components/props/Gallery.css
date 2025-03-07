@@ -1,0 +1,14 @@
+.image{
+    display: flex;
+    padding: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+    flex-direction: column;
+    align-items: center;
+}
+
+#title{
+    align-items: center;
+    justify-content: center;
+    color: brown;
+}
