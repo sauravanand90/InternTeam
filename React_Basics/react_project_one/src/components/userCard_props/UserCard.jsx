@@ -1,5 +1,5 @@
 import React from 'react'
-import pic2 from '../assets/pic2.jpg'
+// import pic2 from './assets/pic2.jpg'
 import "./UserCard.css"
 const UserCard = (props) => {
   return (
