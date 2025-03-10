@@ -1,0 +1,17 @@
+//to convert farenheit to celsius 
+
+function toCelsius(farenheit) {
+    return (5/9)*(farenheit-32);
+}
+console.log(toCelsius(77));
+
+//functions to print names
+
+function printArray(names) {
+   for (let i = 0; i < names.length; i++) {
+      console.log(names[i]);
+   }
+}
+printArray(['Raju','Bheem','Indu']);
+console.log("------");
+printArray(['orange','apple','banana']);

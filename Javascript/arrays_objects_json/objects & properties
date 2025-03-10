@@ -1,0 +1,14 @@
+let obj = { model: "Tesla" };
+obj.color = "Red";
+//delete property
+console.log(obj);
+delete obj.model;
+console.log(obj);
+//checking property
+console.log(obj.hasOwnProperty('model'));
+//object concatenation 
+let obj1 = { name: "Sourav" };
+let obj2 = { age: 23};
+
+let obj3 = { ...obj1, ...obj2 };
+console.log(obj3);
