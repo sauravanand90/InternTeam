@@ -1,0 +1,25 @@
+.btn{
+    margin: 8px 8px 8px 8px;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    padding: 15px;
+    font-weight: bold;
+}
+.btn:hover{
+    background-color: rgb(24, 40, 85);
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+.field{
+    padding: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    border-radius: 4px;
+    border: none;
+}
+body{
+    justify-content: center;
+}
+.cont{
+    justify-content: center;
+}
