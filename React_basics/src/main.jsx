@@ -16,6 +16,8 @@ import Callback_hook from './components/hooks/useCallback_hook.jsx'
 import ExpensiveComponent from './components/hooks/ExpensiveComponent.jsx'
 import TodoReducerList from './components/hooks/Reducer_todo.jsx'
 import Reducer_count from './components/hooks/Reducer_count.jsx'
+import Router_B from './components/React_routing/router.jsx'
+import Navbar from './components/React_routing/Navbar.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -33,7 +35,8 @@ createRoot(document.getElementById('root')).render(
   {/* <Callback_hook /> */}
   {/* <ExpensiveComponent /> */}
   {/* <TodoReducerList /> */}
-  <Reducer_count />
+  {/* <Reducer_count /> */}
+    <Router_B />
   </StrictMode>,
 )
 

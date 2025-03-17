@@ -1,0 +1,147 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+ 
+body{
+    background-color: #18314F;
+    text-align: center;
+}
+ 
+.input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 10px;
+}
+ 
+.name{
+    color: black;
+    font-size: 22px;
+}
+ 
+#result{
+    font-size: 30px;
+    font-family: 'century gothic';
+    color: #d1b148;
+    text-shadow: 0 0 3px #fff,
+        0 0 5px #d1b148,
+        0 0 10px rgb(206, 172, 59),
+        0 0 15px rgb(206, 172, 59),
+        0 0 20px rgb(206, 172, 59),
+        0 0 25px rgb(206, 172, 59),
+        0 0 30px rgb(206, 172, 59);
+}
+ 
+input{
+    border: 2px solid grey;
+    border-radius: 5px;
+    font-size: 18px;
+    font-style: italic;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+    width: 180px;
+    text-align: center;
+}
+ 
+#main{
+    align-items: center;
+}
+ 
+.container{
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+ 
+.game{
+    height: 60vmin;
+    width: 60vmin;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+ 
+.box{
+    height: 18vmin;
+    width: 18vmin;
+    background-color: #8BBEB2;
+    /* color: rgb(138, 46, 46); */
+    /* font-size: 50px;
+    padding: 16px; */
+    border: 2px solid black;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+ 
+#reset_btn{
+    background-color: #8BBEB2;
+    color: #fff;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+#reset_btn:hover{
+    background-color:#b82b2b
+}
+
+
+.material-symbols-outlined{
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+    cursor: pointer;
+    font-size: 40px;
+    color: rgb(138, 46, 46);
+    background: none;
+    border: none;
+}
+
+.material-symbols-outlined:hover{
+    transform: scale(1.5);
+}
+
+.option{
+    font-size: 22px;
+    align-items: center;
+    color: #8BBEB2;
+    font-style: italic;
+}
+
+.selectors{
+    padding: 10px;
+}
+
+p{
+    font-style: italic;
+    color:#8BBEB2;
+    font-size: 22px;
+}
+
+svg {
+    border: 2px solid black;
+}
+.cell {
+    fill: #8BBEB2;
+    stroke: black;
+    stroke-width: 3;
+    cursor: pointer;
+}
+text {  
+    font-family: "Material Icons";
+    font-size: 60px;
+    text-anchor: middle;
+    dominant-baseline: central;
+}
