@@ -18,6 +18,13 @@ import TodoReducerList from './components/hooks/Reducer_todo.jsx'
 import Reducer_count from './components/hooks/Reducer_count.jsx'
 import Router_B from './components/React_routing/router.jsx'
 import Navbar from './components/React_routing/Navbar.jsx'
+import State_lifting from './components/State_lifting/State_lifting.jsx'
+import Redux from './components/Redux/Redux.jsx'
+
+import { Provider } from 'react-redux'
+import { store } from './components/Redux/Store.js'
+
+// for redux u need to wrap the application in the provider and also wrap the store too
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -36,7 +43,12 @@ createRoot(document.getElementById('root')).render(
   {/* <ExpensiveComponent /> */}
   {/* <TodoReducerList /> */}
   {/* <Reducer_count /> */}
-    <Router_B />
+    {/* <Router_B /> */}
+    {/* <State_lifting /> */}
+   <Provider store={store}>
+    <Redux />
+   </Provider>
+    
   </StrictMode>,
 )
 
