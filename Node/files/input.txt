@@ -1,0 +1,3 @@
+Hello !!
+this is an input file in the text format 
+where it can be read.
