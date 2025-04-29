@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PDF Resume Analyzer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    #output, #skills-found {
+      white-space: pre-wrap;
+      background: #f0f0f0;
+      padding: 1em;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+    label {
+      font-weight: bold;
+    }
+    select, input[type="text"], input[type="number"] {
+      margin-bottom: 10px;
+      margin-top: 10px;
+      width: 10%;
+    }
+    .small-input {
+      width: 80px;
+      display: inline-block;
+      margin-right: 10px;
+    }
+    #relocation-container {
+      display: none;
+      margin-top: 20px;
+    }
+    #relocation-container button {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Resume Analyzer</h2>
+
+  <label for="skill-select">Select or Add Skills:</label><br />
+  <select id="skill-select" multiple></select>
+
+  <label for="location-input">Enter Preferred Locations (comma separated):</label><br />
+  <input type="text" id="location-input" placeholder="e.g., Bangalore, Hyderabad, Pune" /><br />
+
+  <label>Experience Range (Years):</label><br />
+  <input type="number" id="exp-from" class="small-input" placeholder="From" min="0" />
+  <input type="number" id="exp-to" class="small-input" placeholder="To" min="0" /><br />
+
+  <label for="upload">Upload PDF Resume:</label><br /><br/>
+  <input type="file" id="upload" accept="application/pdf" /><br />
+
+  <div id="relocation-container">
+    <p>No matching location found. Is candidate ready to relocate?</p>
+    <button id="relocate-yes">Yes</button>
+    <button id="relocate-no">No</button>
+  </div>
+
+  <div id="output"></div>
+  <pre id="skills-found" style="color: green; font-weight: bold;"></pre>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
