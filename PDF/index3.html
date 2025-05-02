@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PDF & Word Resume Analyzer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h2>Resume Analyzer</h2>
+ 
+  <label for="skill-select">Select or Add Skills:</label><br />
+  <select id="skill-select" multiple></select>
+ 
+  <label for="location-input">Enter Preferred Locations (comma separated):</label><br />
+  <input type="text" id="location-input" placeholder="e.g., Bangalore, Hyderabad, Pune" /><br />
+ 
+  <label>Experience Range (Years):</label><br />
+  <input type="number" id="exp-from" class="small-input" placeholder="From" min="0" />
+  <input type="number" id="exp-to" class="small-input" placeholder="To" min="0" /><br />
+ 
+  <label for="upload">Upload Resume (PDF/DOCX):</label><br /><br/>
+  <input type="file" id="upload" accept=".pdf,.docx" multiple /><br />
+ 
+  <label for="sort-by">Sort By:</label>
+  <select id="sort-by">
+    <option value="score">Score (High to Low)</option>
+    <option value="name">Name (A-Z)</option>
+  </select>
+ 
+  <div id="resume-cards" style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 20px;"></div>
+ 
+  <div id="relocation-container" style="display: none;">
+    <p>No matching location found. Is candidate ready to relocate?</p>
+    <button id="relocate-yes">Yes</button>
+    <button id="relocate-no">No</button>
+  </div>
+ 
+  <pre id="skills-found" style="color: green; font-weight: bold;"></pre>
+ 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
