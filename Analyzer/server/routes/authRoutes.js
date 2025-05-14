@@ -12,4 +12,4 @@ router.get('/dashboard', protect, (req, res) => {    //Defines a protected route
 router.post("/register", register);    //Handles registration(calls register controller function to create a new user)
 router.post("/login", login);          //Handles login(calls login controller function to authenticate a user and return a token)
 
-module.exports = router;v 
+module.exports = router;
