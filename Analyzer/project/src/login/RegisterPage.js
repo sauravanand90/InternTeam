@@ -1,10 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import './login.css'
 
-export default function LoginPage() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+export default function RegisterPage() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: ""
+  });
+
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -15,28 +20,44 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e) => {
+    console.log("Navigating to login...");
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", formData);
-      localStorage.setItem("token", res.data.token);
-      alert("Login successful!");
-      navigate("/dashboard"); // or ResumeFilterPage
+      await axios.post("http://localhost:5000/api/auth/register", {
+        email: formData.email,
+        password: formData.password
+      });
+      alert("Registered successfully! Please login.");
+      navigate("/login");
     } catch (err) {
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.response?.data?.message || "Registration failed");
     }
   };
 
   return (
     <div className="page">
       <div className="log" style={{ padding: "30px" }}>
-        <h1>Login</h1>
+        <h1>Register</h1>
         <form onSubmit={handleSubmit}>
+          <div className="mb-3">
+            {/* <label><strong>Name</strong></label> */}
+            <input
+              type="text"
+              name="name"
+              placeholder="User Name"
+              autoComplete="off"
+              className="form"
+              onChange={handleChange}
+              required
+            />
+          </div>
           <div className="mb-3">
             {/* <label><strong>Email</strong></label> */}
             <input
               type="email"
               name="email"
               placeholder="Email"
+              autoComplete="off"
               className="form"
               onChange={handleChange}
               required
@@ -53,14 +74,14 @@ export default function LoginPage() {
               required
             />
           </div>
-          <button type="submit" className="sub-btn">Login</button>
-          <p>Don't have an account?</p>
+          <button type="submit" className="sub-btn">Register</button>
+          <p>Already have an account?</p>
           <button
             type="button"
             className="log-btn"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
           >
-            Register
+            Login
           </button>
         </form>
       </div>
