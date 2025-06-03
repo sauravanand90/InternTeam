@@ -25,16 +25,21 @@ export default function ResumeFilterPage() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Resume Analyzer</h1>
+    <div className="resume-filter-page">
+      {/* <div className="logout-button">
+        <button onClick={handleLogout} className="logout-btn">Logout</button>
+      </div> */}
+      <div style={{ padding: '20px' }}>
+        <h1>Resume Analyzer</h1>
 
-      <div style={{ marginBottom: '30px' }}>
-        <JobCriteriaForm onSubmit={handleCriteriaSubmit} />
+        <div style={{ marginBottom: '30px' }}>
+          <JobCriteriaForm onSubmit={handleCriteriaSubmit} />
+        </div>
+
+        {criteria && (
+          <ResumeUploader criteria={criteria} />
+        )}
       </div>
-
-      {criteria && (
-        <ResumeUploader criteria={criteria} />
-      )}
     </div>
   );
 }

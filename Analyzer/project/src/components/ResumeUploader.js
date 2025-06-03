@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
@@ -11,34 +11,59 @@ export default function ResumeUploader({ criteria }) {
   const [sortBy, setSortBy] = useState('score-desc');
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleFiles = async (e) => {
+  const handleFiles = async (files) => {
     setLoading(true);
-    const files = Array.from(e.target.files);
+    const fileArray = Array.from(files);
     const tempResults = [];
     const tempFiles = {};
 
-    for (const file of files) {
-      const text = await extractTextFromPDF(file);
-      const { name, matchedSkills, matchedLocation, totalExperience, score, status } = analyzeResume(text, criteria);
-      
-      // Store the file for preview
-      tempFiles[file.name] = file;
-      
-      tempResults.push({ 
-        fileName: file.name,
-        name,
-        matchedSkills,
-        matchedLocation,
-        totalExperience,
-        score,
-        status
-      });
+    for (const file of fileArray) {
+      if (file.type === 'application/pdf') {
+        const text = await extractTextFromPDF(file);
+        const { name, matchedSkills, matchedLocation, totalExperience, score, status } = analyzeResume(text, criteria);
+        
+        // Store the file for preview
+        tempFiles[file.name] = file;
+        
+        tempResults.push({ 
+          fileName: file.name,
+          name,
+          matchedSkills,
+          matchedLocation,
+          totalExperience,
+          score,
+          status
+        });
+      }
     }
 
     setUploadedFiles(tempFiles);
     sortResults(tempResults, sortBy);
     setLoading(false);
+  };
+
+  const onDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = e.dataTransfer.files;
+    handleFiles(files);
+  }, [criteria]);
+
+  const onDragOver = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const onDragLeave = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleFileInput = (e) => {
+    const files = e.target.files;
+    handleFiles(files);
   };
 
   const handlePreview = (fileName) => {
@@ -169,14 +194,60 @@ Hiring Team`
 
   return (
     <>
-      <input
-              type="file"
-              webkitdirectory="true"
-              directory=""
-              accept=".pdf"
-              onChange={handleFiles}
+      <div
+        style={{
+          border: `2px dashed ${isDragging ? '#4CAF50' : '#ccc'}`,
+          borderRadius: '8px',
+          padding: '20px',
+          textAlign: 'center',
+          backgroundColor: isDragging ? 'rgba(76, 175, 80, 0.1)' : 'transparent',
+          transition: 'all 0.3s ease',
+          marginBottom: '20px'
+        }}
+        onDrop={onDrop}
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+      >
+        <div style={{ marginBottom: '15px' }}>
+          <i className="fas fa-cloud-upload-alt" style={{ fontSize: '48px', color: '#666' }}></i>
+        </div>
+        <p style={{ marginBottom: '15px', color: '#666' }}>
+          Drag and drop PDF files here, or
+        </p>
+        <div>
+          <input
+            type="file"
+            webkitdirectory="true"
+            directory=""
+            accept=".pdf"
+            onChange={handleFileInput}
+            style={{ display: 'none' }}
+            id="file-input"
           />
-          {loading && <p>Analyzing resumes...</p>}
+          <label
+            htmlFor="file-input"
+            style={{
+              backgroundColor: '#4CAF50',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              display: 'inline-block',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}
+          >
+            Select Folder
+          </label>
+        </div>
+      </div>
+
+      {loading && (
+        <div style={{ textAlign: 'center', margin: '20px 0' }}>
+          <p>Analyzing resumes...</p>
+        </div>
+      )}
       
       {results.length > 0 && (
         <div style={{ margin: '20px 0'}}>

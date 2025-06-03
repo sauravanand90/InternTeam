@@ -4,6 +4,8 @@ body {
   background-color: #f4f6f9;
 }
 
+
+
 .container {
   max-width: 700px;
   margin: 50px auto;
@@ -51,6 +53,15 @@ input[type="number"]:focus {
   font-weight: 600;
   width: 15%
 }
+
+.logout-button {
+  color: red;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  width: 15%;
+}
+
 
 .preview{
   background-color: #2a4d8f;
