@@ -4,13 +4,49 @@ import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
+// Helper to recursively get all PDF files from DataTransferItemList
+async function getAllPDFFilesFromItems(items) {
+  const pdfFiles = [];
+
+  async function traverseFileTree(item, path = "") {
+    return new Promise((resolve) => {
+      if (item.isFile) {
+        item.file((file) => {
+          if (file.type === "application/pdf") {
+            pdfFiles.push(file);
+          }
+          resolve();
+        });
+      } else if (item.isDirectory) {
+        const dirReader = item.createReader();
+        dirReader.readEntries(async (entries) => {
+          for (const entry of entries) {
+            await traverseFileTree(entry, path + item.name + "/");
+          }
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  const traversePromises = [];
+  for (let i = 0; i < items.length; i++) {
+    const entry = items[i].webkitGetAsEntry && items[i].webkitGetAsEntry();
+    if (entry) {
+      traversePromises.push(traverseFileTree(entry));
+    }
+  }
+  await Promise.all(traversePromises);
+  return pdfFiles;
+}
+
 export default function ResumeUploader({ criteria }) {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [sortBy, setSortBy] = useState('score-desc');
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFiles = async (files) => {
@@ -44,10 +80,16 @@ export default function ResumeUploader({ criteria }) {
     setLoading(false);
   };
 
-  const onDrop = useCallback((e) => {
+  const onDrop = useCallback(async (e) => {
     e.preventDefault();
     setIsDragging(false);
-    const files = e.dataTransfer.files;
+    let files = [];
+    // Use File System API if available for folders
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0 && e.dataTransfer.items[0].webkitGetAsEntry) {
+      files = await getAllPDFFilesFromItems(e.dataTransfer.items);
+    } else {
+      files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+    }
     handleFiles(files);
   }, [criteria]);
 
@@ -72,59 +114,6 @@ export default function ResumeUploader({ criteria }) {
       const fileUrl = URL.createObjectURL(file);
       window.open(fileUrl, '_blank');
     }
-  };
-
-  const handleEmail = (candidate) => {
-    setSelectedCandidate(candidate);
-    setShowEmailModal(true);
-  };
-
-  const getEmailTemplate = (candidate) => {
-    const currentDate = new Date();
-    const interviewDate = new Date(currentDate.setDate(currentDate.getDate() + 3)); // Schedule interview 3 days from now
-    const formattedDate = interviewDate.toLocaleDateString('en-US', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
-    const formattedTime = '10:00 AM';
-
-    if (candidate.status === 'Shortlisted') {
-      return {
-        subject: `Interview Invitation - ${candidate.name}`,
-        body: `Dear ${candidate.name},
-
-We are pleased to inform you that your application has been shortlisted for the position. Your profile matches our requirements, particularly in the following areas:
-${candidate.matchedSkills.map(skill => `- ${skill}`).join('\n')}
-
-We would like to invite you for an interview on ${formattedDate} at ${formattedTime}.
-
-Please confirm your availability for this interview slot. If this time doesn't work for you, please let us know your preferred time slots.
-
-Best regards,
-Hiring Team`
-      };
-    } else {
-      return {
-        subject: `Application Status - ${candidate.name}`,
-        body: `Dear ${candidate.name},
-
-Thank you for your interest in the position and for taking the time to apply. After careful consideration of your application, we regret to inform you that we have decided to move forward with other candidates whose qualifications more closely match our current needs.
-
-We appreciate your interest in joining our team and wish you success in your job search.
-
-Best regards,
-Hiring Team`
-      };
-    }
-  };
-
-  const sendEmail = (candidate) => {
-    const { subject, body } = getEmailTemplate(candidate);
-    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(gmailUrl, '_blank');
-    setShowEmailModal(false);
   };
 
   const handleSort = (e) => {
@@ -304,9 +293,6 @@ Hiring Team`
                 <strong style={{ marginRight: '5px' }}>Location:</strong>
                 <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
             </div>
-            {/* <div style={{ margin: '5px 0' }}>
-              <strong>Location:</strong> {result.matchedLocation || 'No location match found'} 
-            </div> */}
             <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
               <button className='preview'
                 onClick={() => handlePreview(result.fileName)}
@@ -332,82 +318,6 @@ Hiring Team`
           </div>
         ))}
       </div>
-
-      {showEmailModal && selectedCandidate && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '20px',
-            borderRadius: '10px',
-            maxWidth: '500px',
-            width: '90%',
-            maxHeight: '90vh',
-            overflow: 'auto'
-          }}>
-            <h3 style={{ margin: '0 0 20px 0', color: '#333' }}>
-              {selectedCandidate.status === 'Shortlisted' ? 'Interview Email' : 'Rejection Email'}
-            </h3>
-            <div style={{ marginBottom: '20px' }}>
-              <strong style={{ color: '#333' }}>Subject:</strong>
-              <p style={{ color: '#666' }}>{getEmailTemplate(selectedCandidate).subject}</p>
-            </div>
-            <div style={{ marginBottom: '20px' }}>
-              <strong style={{ color: '#333' }}>Body:</strong>
-              <pre style={{ 
-                whiteSpace: 'pre-wrap', 
-                color: '#666',
-                backgroundColor: '#f5f5f5',
-                padding: '10px',
-                borderRadius: '5px',
-                marginTop: '10px'
-              }}>
-                {getEmailTemplate(selectedCandidate).body}
-              </pre>
-            </div>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-              <button
-                onClick={() => setShowEmailModal(false)}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '5px',
-                  border: '1px solid #ccc',
-                  backgroundColor: '#f5f5f5',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.3s'
-                }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#ffebee'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#f5f5f5'}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => sendEmail(selectedCandidate)}
-                style={{
-                  padding: '8px 16px',
-                  borderRadius: '5px',
-                  border: 'none',
-                  backgroundColor: '#4CAF50',
-                  color: 'white',
-                  cursor: 'pointer'
-                }}
-              >
-                Send Email
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }

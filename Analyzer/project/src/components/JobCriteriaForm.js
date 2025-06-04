@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Select from 'react-select';
+import "../App.css";
 
 const skillOptions = [
   { value: 'javascript', label: 'JavaScript' }, { value: 'django', label: 'Django' },

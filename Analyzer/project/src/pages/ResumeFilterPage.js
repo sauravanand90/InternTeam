@@ -15,20 +15,23 @@ export default function ResumeFilterPage() {
     }
   }, [navigate]);
 
-  // const handleLogout = () => {               //Can be used after adding a logout button
-  //   localStorage.removeItem('token');
-  //   navigate('/login');
-  // };
-
   const handleCriteriaSubmit = (formData) => {
     setCriteria(formData);
   };
 
   return (
     <div className="resume-filter-page">
-      {/* <div className="logout-button">
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
-      </div> */}
+      <div className="navbar">
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
+          <button className="nav-btn" onClick={() => window.location.reload()}>Home</button>
+        </div>
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', paddingRight: '60px' }}>
+          <button className="nav-btn" onClick={() => {
+            localStorage.removeItem('token');
+            navigate('/login');
+          }}>Logout</button>
+        </div>
+      </div>
       <div style={{ padding: '20px' }}>
         <h1>Resume Analyzer</h1>
 
