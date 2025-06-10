@@ -240,7 +240,7 @@ export default function ResumeUploader({ criteria }) {
       
       {results.length > 0 && (
         <div style={{ margin: '20px 0'}}>
-          <label style={{ marginRight: '10px', color: '#333' }}>Sort by: </label>
+          <label style={{ marginRight: '10px', color: '#333'}}>Sort by: </label>
           <select 
             value={sortBy} 
             onChange={handleSort}
