@@ -1,5 +1,68 @@
 Login.css
 
+.main-title {
+  font-size: 42px;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(90deg, #1f3d72, #4a90e2);
+  background-clip: text;
+  color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+ 
+.main-title::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  animation: shine 2.5s infinite;
+}
+ 
+@keyframes shine {
+  100% {
+    left: 125%;
+  }
+}
+
+
+.sub-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  color: red !important;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}
+
+
 .page body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f4f6f9;
@@ -10,7 +73,9 @@ Login.css
 .page h1 {
   text-align: center;
   color: #2a4d8f;
-  margin-bottom: 30px;
+  font-size: 36px;
+  margin-top: 20px;
+
 }
 
 .page .log{

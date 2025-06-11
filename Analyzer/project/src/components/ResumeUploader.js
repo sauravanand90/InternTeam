@@ -84,13 +84,24 @@ export default function ResumeUploader({ criteria }) {
     e.preventDefault();
     setIsDragging(false);
     let files = [];
-    // Use File System API if available for folders
-    if (e.dataTransfer.items && e.dataTransfer.items.length > 0 && e.dataTransfer.items[0].webkitGetAsEntry) {
-      files = await getAllPDFFilesFromItems(e.dataTransfer.items);
-    } else {
+
+    // Handle both files and folders
+    if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
+      // Check if it's a folder drop
+      if (e.dataTransfer.items[0].webkitGetAsEntry) {
+        files = await getAllPDFFilesFromItems(e.dataTransfer.items);
+      } else {
+        // Handle regular file drop
+        files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
+      }
+    } else if (e.dataTransfer.files) {
+      // Fallback for browsers that don't support items
       files = Array.from(e.dataTransfer.files).filter(f => f.type === 'application/pdf');
     }
-    handleFiles(files);
+
+    if (files.length > 0) {
+      handleFiles(files);
+    }
   }, [criteria]);
 
   const onDragOver = useCallback((e) => {
@@ -105,7 +116,9 @@ export default function ResumeUploader({ criteria }) {
 
   const handleFileInput = (e) => {
     const files = e.target.files;
-    handleFiles(files);
+    if (files.length > 0) {
+      handleFiles(files);
+    }
   };
 
   const handlePreview = (fileName) => {
@@ -143,10 +156,6 @@ export default function ResumeUploader({ criteria }) {
         break;
       case 'experience-asc':
         sortedResults.sort((a, b) => a.totalExperience - b.totalExperience);
-        break;
-      case 'status':
-        const statusOrder = { 'Shortlisted': 0, 'Under Review': 1, 'Rejected': 2 };
-        sortedResults.sort((a, b) => statusOrder[a.status] - statusOrder[b.status]);
         break;
       default:
         break;
@@ -201,17 +210,16 @@ export default function ResumeUploader({ criteria }) {
           <i className="fas fa-cloud-upload-alt" style={{ fontSize: '48px', color: '#666' }}></i>
         </div>
         <p style={{ marginBottom: '15px', color: '#666' }}>
-          Drag and drop PDF files here, or
+          Drag and drop PDF files or folders here, or
         </p>
-        <div>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
           <input
             type="file"
-            webkitdirectory="true"
-            directory=""
             accept=".pdf"
             onChange={handleFileInput}
             style={{ display: 'none' }}
             id="file-input"
+            multiple
           />
           <label
             htmlFor="file-input"
@@ -226,6 +234,32 @@ export default function ResumeUploader({ criteria }) {
             }}
             onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'}
             onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}
+          >
+            Select Files
+          </label>
+
+          <input
+            type="file"
+            webkitdirectory="true"
+            directory=""
+            accept=".pdf"
+            onChange={handleFileInput}
+            style={{ display: 'none' }}
+            id="folder-input"
+          />
+          <label
+            htmlFor="folder-input"
+            style={{
+              backgroundColor: '#2196F3',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '5px',
+              cursor: 'pointer',
+              display: 'inline-block',
+              transition: 'background-color 0.3s'
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'}
+            onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
           >
             Select Folder
           </label>
@@ -259,7 +293,6 @@ export default function ResumeUploader({ criteria }) {
             <option value="name-desc">Name (Z to A)</option>
             <option value="experience-desc">Experience (High to Low)</option>
             <option value="experience-asc">Experience (Low to High)</option>
-            <option value="status">Status (Shortlisted → Rejected)</option>
           </select>
         </div>
       )}
