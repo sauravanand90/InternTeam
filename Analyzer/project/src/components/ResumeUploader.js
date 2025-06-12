@@ -42,11 +42,9 @@ async function getAllPDFFilesFromItems(items) {
   return pdfFiles;
 }
 
-export default function ResumeUploader({ criteria }) {
+export default function ResumeUploader({ criteria, onResultsReady }) {
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState([]);
   const [uploadedFiles, setUploadedFiles] = useState({});
-  const [sortBy, setSortBy] = useState('score-desc');
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFiles = async (files) => {
@@ -76,8 +74,8 @@ export default function ResumeUploader({ criteria }) {
     }
 
     setUploadedFiles(tempFiles);
-    sortResults(tempResults, sortBy);
     setLoading(false);
+    onResultsReady(tempResults, criteria);
   };
 
   const onDrop = useCallback(async (e) => {
@@ -102,7 +100,7 @@ export default function ResumeUploader({ criteria }) {
     if (files.length > 0) {
       handleFiles(files);
     }
-  }, [criteria]);
+  }, [criteria, onResultsReady]);
 
   const onDragOver = useCallback((e) => {
     e.preventDefault();
@@ -126,67 +124,6 @@ export default function ResumeUploader({ criteria }) {
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       window.open(fileUrl, '_blank');
-    }
-  };
-
-  const handleSort = (e) => {
-    const newSortBy = e.target.value;
-    setSortBy(newSortBy);
-    sortResults([...results], newSortBy);
-  };
-
-  const sortResults = (resultsToSort, sortCriteria) => {
-    let sortedResults = [...resultsToSort];
-    
-    switch (sortCriteria) {
-      case 'score-desc':
-        sortedResults.sort((a, b) => b.score - a.score);
-        break;
-      case 'score-asc':
-        sortedResults.sort((a, b) => a.score - b.score);
-        break;
-      case 'name-asc':
-        sortedResults.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-        break;
-      case 'name-desc':
-        sortedResults.sort((a, b) => (b.name || '').localeCompare(a.name || ''));
-        break;
-      case 'experience-desc':
-        sortedResults.sort((a, b) => b.totalExperience - a.totalExperience);
-        break;
-      case 'experience-asc':
-        sortedResults.sort((a, b) => a.totalExperience - b.totalExperience);
-        break;
-      default:
-        break;
-    }
-    
-    setResults(sortedResults);
-  };
-
-  const getCardColor = (status) => {
-    switch (status) {
-      case 'Shortlisted':
-        return '#4CAF50'; // Green
-      case 'Under Review':
-        return '#FFC107'; // Yellow
-      case 'Rejected':
-        return '#F44336'; // Red
-      default:
-        return '#9E9E9E'; // Grey
-    }
-  };
-
-  const formatExperience = (months) => {
-    const years = Math.floor(months / 12);
-    const remainingMonths = months % 12;
-    
-    if (years === 0) {
-      return `${remainingMonths} months`;
-    } else if (remainingMonths === 0) {
-      return `${years} years`;
-    } else {
-      return `${years} years ${remainingMonths} months`;
     }
   };
 
@@ -264,92 +201,8 @@ export default function ResumeUploader({ criteria }) {
             Select Folder
           </label>
         </div>
-      </div>
 
-      {loading && (
-        <div style={{ textAlign: 'center', margin: '20px 0' }}>
-          <p>Analyzing resumes...</p>
-        </div>
-      )}
-      
-      {results.length > 0 && (
-        <div style={{ margin: '20px 0'}}>
-          <label style={{ marginRight: '10px', color: '#333'}}>Sort by: </label>
-          <select 
-            value={sortBy} 
-            onChange={handleSort}
-            style={{
-              padding: '8px',
-              borderRadius: '5px',
-              border: '1px solid #ccc',
-              backgroundColor: 'white',
-              cursor: 'pointer',
-              minWidth: '200px',
-            }}
-          >
-            <option value="score-desc">Score (High to Low)</option>
-            <option value="score-asc">Score (Low to High)</option>
-            <option value="name-asc">Name (A to Z)</option>
-            <option value="name-desc">Name (Z to A)</option>
-            <option value="experience-desc">Experience (High to Low)</option>
-            <option value="experience-asc">Experience (Low to High)</option>
-          </select>
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', marginTop: '20px', justifyContent: 'center', alignItems: 'center' }}>
-        {results.map((result, index) => (
-          <div
-            key={index}
-            style={{
-              height: '300px',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: getCardColor(result.status),
-              color: 'white',
-              padding: '20px',
-              borderRadius: '10px',
-              width: '300px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              fontSize: '15px'
-            }}
-          >
-            <h3 style={{ margin: '0 0 10px 0' }}>{result.name}</h3>
-            <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p>
-            <p style={{ margin: '5px 0' }}><strong>Score:</strong> {result.score}%</p>
-            <p style={{ margin: '5px 0' }}><strong>Total Experience:</strong> {formatExperience(result.totalExperience)}</p>
-            <div style={{ margin: '10px 0' }}>
-                <strong style={{ marginRight: '5px' }}>Matched Skills:</strong>
-                <span>{result.matchedSkills.join(', ') || 'No skills matched'}</span>
-            </div>
-            <div style={{ margin: '5px 0' }}>
-                <strong style={{ marginRight: '5px' }}>Location:</strong>
-                <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
-            </div>
-            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
-              <button className='preview'
-                onClick={() => handlePreview(result.fileName)}
-                style={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
-                  border: '1px solid white',
-                  padding: '8px 16px',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  flex: 'none',
-                  transition: 'background-color 0.3s',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-                onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)'}
-                onMouseOut={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'}
-              >
-                Preview
-              </button>
-            </div>
-          </div>
-        ))}
+        {loading && <p className="loading">Processing resumes...</p>}
       </div>
     </>
   );
@@ -563,24 +416,7 @@ function analyzeResume(text, { skills, location }) {
   const locationMatch = matchedLocation.length > 0;
   console.log(matchedLocation)   //To check which location matched
 
-  // Try different location matching patterns
-  // const locationPatterns = [
-  //   new RegExp(`\\b${locationLower}\\b`, 'i'),  // Exact word match
-  //   new RegExp(locationLower, 'i'),             // Partial match
-  //   new RegExp(locationLower.replace(/\s+/g, '\\s*'), 'i')  // Flexible space match
-  // ];
 
-  // for (const pattern of locationPatterns) {
-  //   const match = text.match(pattern);
-  //   if (match) {
-  //     // Find the original case version of the location
-  //     const startIndex = textLower.indexOf(match[0]);
-  //     const endIndex = startIndex + match[0].length;
-  //     matchedLocation = text.slice(startIndex, endIndex);
-  //     console.log('Location matched:', matchedLocation);
-  //     break;
-  //   }
-  // }
 
   // Determine status based on score
   let status;

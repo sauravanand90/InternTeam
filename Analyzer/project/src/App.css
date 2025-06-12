@@ -14,11 +14,11 @@ body {
   flex-direction: row;
   justify-content: flex-end;
   align-items: center;
-  background: rgba(63, 61, 87, 0.1);
+  background: rgba(253, 253, 254, 0.1);
   height: 56px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 0 36px;
-  /* backdrop-filter: blur(50px); */
+  backdrop-filter: blur(50px);
 }
 
 .nav-btn {

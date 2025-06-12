@@ -16,12 +16,12 @@ function App() {
       <Routes>
         <Route path="/" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/results" element={<ResumeResults />} />  
         <Route path="/dashboard" element={
           <ProtectedRoute>
             <ResumeFilterPage />
           </ProtectedRoute>
-        } 
-        />
+        } />
       </Routes>
     </Router>
   );
