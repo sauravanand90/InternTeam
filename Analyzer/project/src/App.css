@@ -211,3 +211,22 @@ button:hover {
   transition: border-color 0.3s ease;
   box-sizing: border-box;
 }
+
+/* Icon hover effects */
+.icon-tick {
+  color: white;
+  transition: color 0.1s ease;
+}
+
+.icon-tick:hover {
+  color: #4CAF50; /* Green */
+}
+
+.icon-cross {
+  color: white;
+  transition: color 0.3s ease;
+}
+
+.icon-cross:hover {
+  color: #F44336; /* Red */
+}

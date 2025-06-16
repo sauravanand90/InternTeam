@@ -29,17 +29,19 @@ export default function JobCriteriaForm({ onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
+    const formData = {
       skills: skills.map(option => option.value),
       location: location.toLowerCase(),
       minExp: parseInt(minExp),
       maxExp: parseInt(maxExp),
-    });
+    };
+    console.log('JobCriteriaForm: Submitting form with data:', formData); // Debug log
+    onSubmit(formData);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <label for="skill-select"><strong>Select or Add Skills:</strong></label>
+      <label htmlFor="skill-select"><strong>Select or Add Skills:</strong></label>
       <Select
         options={skillOptions}
         isMulti

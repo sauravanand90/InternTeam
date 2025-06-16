@@ -56,7 +56,7 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
     for (const file of fileArray) {
       if (file.type === 'application/pdf') {
         const text = await extractTextFromPDF(file);
-        const { name, matchedSkills, matchedLocation, totalExperience, score, status } = analyzeResume(text, criteria);
+        const { name, matchedSkills, matchedLocation, totalExperience, score, initialStatus, userActionStatus, email, phoneNumber } = analyzeResume(text, criteria);
         
         // Store the file for preview
         tempFiles[file.name] = file;
@@ -68,14 +68,17 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
           matchedLocation,
           totalExperience,
           score,
-          status
+          initialStatus,
+          userActionStatus,
+          email,
+          phoneNumber
         });
       }
     }
 
     setUploadedFiles(tempFiles);
     setLoading(false);
-    onResultsReady(tempResults, criteria);
+    onResultsReady(tempResults, criteria, tempFiles);
   };
 
   const onDrop = useCallback(async (e) => {
@@ -100,7 +103,7 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
     if (files.length > 0) {
       handleFiles(files);
     }
-  }, [criteria, onResultsReady]);
+  }, [criteria, onResultsReady, handleFiles]);
 
   const onDragOver = useCallback((e) => {
     e.preventDefault();
@@ -116,14 +119,6 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
     const files = e.target.files;
     if (files.length > 0) {
       handleFiles(files);
-    }
-  };
-
-  const handlePreview = (fileName) => {
-    const file = uploadedFiles[fileName];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      window.open(fileUrl, '_blank');
     }
   };
 
@@ -385,6 +380,39 @@ function extractLocations(text) {
   return [...text.matchAll(locationPattern)].map(match => match[0]);
 }
 
+function matchLocation(text, location) {
+  const locationPattern = new RegExp(location, 'gi');
+  return [...text.matchAll(locationPattern)].map(match => match[0]);
+}
+
+function extractEmail(text) {
+  // Comprehensive email regex that handles various formats
+  const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+  const emails = text.match(emailPattern);
+  return emails && emails.length > 0 ? emails[0] : null;
+}
+
+function extractPhoneNumber(text) {
+  // Comprehensive phone regex that handles:
+  // - International numbers with country codes (+91, +1, etc.)
+  // - Numbers with or without spaces, hyphens, or dots
+  // - Numbers with or without parentheses
+  // - Numbers with optional extensions
+  const phonePattern = /(?:\+\d{1,3}[-.\s]?)?(?:\(?\d{3}\)?[-.\s]?)?\d{3}[-.\s]?\d{4}(?:[-.\s]?(?:ext|x|extension)[-.\s]?\d{1,5})?/g;
+  const phoneNumbers = text.match(phonePattern);
+  
+  if (phoneNumbers) {
+    for (const num of phoneNumbers) {
+      // Clean the number and check if it has enough digits
+      const digits = num.replace(/[^\d]/g, '');
+      if (digits.length >= 7 && digits.length <= 15) { // Most phone numbers are between 7-15 digits
+        return num.trim();
+      }
+    }
+  }
+  return null;
+}
+
 function analyzeResume(text, { skills, location }) {
   const name = extractName(text);
 
@@ -403,30 +431,31 @@ function analyzeResume(text, { skills, location }) {
   const totalExperience = extractExperience(text);
 
   // Check location match and extract the matched location
-  // let matchedLocation = null;
-  // Extract location
   const extractedLocations = extractLocations(text); 
   //console.log(extractedLocations)
-  const userLocations = document.getElementById('location-input').value.split(',').map(loc => loc.trim().toLowerCase()).filter(Boolean);
+  const userLocations = location.split(',').map(loc => loc.trim().toLowerCase()).filter(Boolean);
 
   const matchedLocation = userLocations.filter(userLoc =>
     extractedLocations.some(resumeLoc => resumeLoc.toLowerCase().includes(userLoc))
   );
 
-  const locationMatch = matchedLocation.length > 0;
-  console.log(matchedLocation)   //To check which location matched
+  // console.log(matchedLocation)   //To check which location matched
 
-
-
-  // Determine status based on score
-  let status;
+  // Determine initial status based on score
+  let initialStatus;
   if (score >= 80) {
-    status = 'Shortlisted';
+    initialStatus = 'Shortlisted';
   } else if (score >= 50 && score < 80) {
-    status = 'Under Review';
+    initialStatus = 'Under Review';
   } else {
-    status = 'Rejected';
+    initialStatus = 'Rejected';
   }
+
+  const email = extractEmail(text);
+  const phoneNumber = extractPhoneNumber(text);
+
+  console.log("analyzeResume: Extracted Email:", email);
+  console.log("analyzeResume: Extracted Phone Number:", phoneNumber);
 
   return {
     name,
@@ -434,6 +463,9 @@ function analyzeResume(text, { skills, location }) {
     matchedLocation,
     totalExperience,
     score,
-    status
+    initialStatus,
+    userActionStatus: null,
+    email,
+    phoneNumber
   };
 }

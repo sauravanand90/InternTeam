@@ -90,14 +90,14 @@ export default function RegisterPage() {
           </div>
           {errors.general && <p className="error">{errors.general}</p>}
           <button type="submit" className="sub-btn">Register</button>
-          <p>Already have an account?</p>
-          <button
+          <p>Already have an account?   <a href="/login">Login</a></p>
+          {/* <button
             type="button"
             className="log-btn"
             onClick={() => navigate('/login')}
           >
             Login
-          </button>
+          </button> */}
         </form>
       </div>
     </div>

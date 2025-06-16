@@ -78,14 +78,15 @@ export default function LoginPage() {
             Login
             {loading && <span className="spinner"></span>}  
           </button>
-          <p>Don't have an account?</p>
-          <button
+          <p>Don't have an account?  <a href="/">Register</a></p>
+          {/* <button
             type="button"
             className="log-btn"
             onClick={() => navigate('/')}
           >
             Register
-          </button>
+          </button> */}
+          
         </form>
       </div>
     </div>
