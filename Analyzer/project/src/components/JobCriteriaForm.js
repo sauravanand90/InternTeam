@@ -12,7 +12,7 @@ const skillOptions = [
   { value: 'sql', label: 'SQL' }, { value: 'docker', label: 'Docker' },
   { value: 'html', label: 'HTML' }, { value: 'kubernetes', label: 'Kubernetes' },
   { value: 'css', label: 'CSS' }, { value: 'aws', label: 'AWS' },
-  { value: 'angular', label: 'Angular' }, { value: 'azure', label: 'Kubernetes' },
+  { value: 'angular', label: 'Angular' }, { value: 'azure', label: 'Azure' },
   { value: 'vue', label: 'Vue' }, { value: 'linux', label: 'Linux' },
   { value: 'express', label: 'Express' }, { value: 'machine learning', label: 'Machine Learning' },
   { value: 'mongodb', label: 'MongoDB' }, { value: 'deep learning', label: 'Deep Learning' },

@@ -48,7 +48,7 @@ export default function RegisterPage() {
     <div className="page">
     <h1 className="main-title">RESUME ANALYZER</h1>
       <div className="log" style={{ padding: "30px" }}>
-        <h1>Register</h1>
+        <h2>Register</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             {/* <label><strong>Name</strong></label> */}

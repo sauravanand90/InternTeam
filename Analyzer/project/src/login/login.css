@@ -1,8 +1,10 @@
-Login.css
-
 .main-title {
-  font-size: 42px;
-  font-weight: 700;
+  font-size: 50px;
+  font-family: "Nunito", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 0.5px;
   text-align: center;
   background: linear-gradient(90deg, #1f3d72, #4a90e2);
   background-clip: text;
@@ -74,7 +76,16 @@ Login.css
 .page h1 {
   text-align: center;
   color: #2a4d8f;
-  font-size: 36px;
+  font-size: 50px;
+  margin-top: 20px;
+
+}
+
+.page h2 {
+  text-align: center;
+  color: #2a4d8f;
+  font-size: 30px;
+  font-family: "Paprika", system-ui;
   margin-top: 20px;
 
 }
@@ -110,6 +121,7 @@ Login.css
     width: 80%;
     padding: 10px 12px;
     font-size: 16px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     border: 2px solid #ccc;
     border-radius: 10px;
     box-sizing: border-box;
@@ -125,6 +137,7 @@ Login.css
     width: 150px;
     padding: 12px;
     font-size: 16px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
     display: block;
     margin: 6px 0;
     border: none;
@@ -145,4 +158,5 @@ Login.css
     margin: 2px 0;
     color: #555;
     font-size: 18px;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }

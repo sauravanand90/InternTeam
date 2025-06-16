@@ -164,6 +164,7 @@ export default function ResumeResults() {
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <button 
+          className='res'
           onClick={() => navigate('/dashboard')}
           style={{
             display: 'flex',
@@ -175,7 +176,8 @@ export default function ResumeResults() {
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer',
-            fontSize: '16px'
+            fontSize: '16px',
+            fontFamily: 'Georgia, Times New Roman, Times, serif',
           }}
         >
           <FaArrowLeft /> Back to Dashboard
@@ -188,7 +190,8 @@ export default function ResumeResults() {
             style={{
               padding: '8px',
               borderRadius: '6px',
-              border: '1px solid #ccc'
+              border: '1px solid #ccc',
+              fontFamily: 'Georgia, Times New Roman, Times, serif',
             }}
           >
             <option value="score">Sort by Score</option>
@@ -196,7 +199,8 @@ export default function ResumeResults() {
             <option value="name">Sort by Name</option>
           </select>
           
-          <button
+          <button 
+            className='res'
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
             style={{
               padding: '8px 16px',
@@ -204,7 +208,8 @@ export default function ResumeResults() {
               color: 'white',
               border: 'none',
               borderRadius: '6px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontFamily: 'Georgia, Times New Roman, Times, serif',
             }}
           >
             {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
@@ -244,14 +249,14 @@ export default function ResumeResults() {
           marginBottom: '20px',
           border: '1px solid #d4def7'
         }}>
-          <h3 style={{ margin: '0 0 10px 0', color: '#2a4d8f' }}>Job Criteria:</h3>
-          <p style={{ margin: '5px 0' }}><strong>Skills:</strong> {criteria.skills.join(', ')}</p>
-          <p style={{ margin: '5px 0' }}><strong>Location:</strong> {criteria.location}</p>
+          <h4 style={{ margin: '0 0 10px 0', color: '#2a4d8f', fontFamily: 'Paprika' }}>Job Criteria:</h4>
+          <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Skills:</strong> {criteria.skills.join(', ')}</p>
+          <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Location:</strong> {criteria.location}</p>
         </div>
       )}
 
       {criteria && (
-        <div style={{ marginBottom: '30px' }}>
+        <div style={{ marginBottom: '30px', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
           <ResumeUploader criteria={criteria} onResultsReady={handleResultsReady} />
         </div>
       )}
@@ -273,7 +278,8 @@ export default function ResumeResults() {
               padding: '20px',
               borderRadius: '10px',
               boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              fontSize: '15px'
+              fontSize: '15px',
+              fontFamily: 'Georgia, Times New Roman, Times, serif'
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -400,7 +406,8 @@ export default function ResumeResults() {
           borderRadius: '5px',
           boxShadow: '0 2px 10px rgba(0,0,0,0.2)',
           zIndex: 1000,
-          animation: 'fadeInOut 3s forwards'
+          animation: 'fadeInOut 3s forwards',
+          fontFamily: 'Georgia, Times New Roman, Times, serif'
         }}>
           Resume shortlisted!
         </div>

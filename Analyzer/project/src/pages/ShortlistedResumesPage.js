@@ -51,7 +51,7 @@ export default function ShortlistedResumesPage() {
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <button 
+        <button className='res'
           onClick={() => navigate('/results')}
           style={{
             display: 'flex',
@@ -63,12 +63,13 @@ export default function ShortlistedResumesPage() {
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer',
-            fontSize: '16px'
+            fontSize: '16px',
+            fontFamily: 'Georgia, Times New Roman, Times, serif'
           }}
         >
           <FaArrowLeft /> Back to Results
         </button>
-        <h1 style={{ color: '#2a4d8f', margin: '0' }}>Shortlisted Resumes</h1>
+        <h3 style={{ color: '#2a4d8f', margin: '0' }}>Shortlisted Resumes</h3>
         <button 
           onClick={handleDownloadExcel}
           style={{
@@ -81,7 +82,7 @@ export default function ShortlistedResumesPage() {
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer',
-            fontSize: '16px'
+            fontSize: '16px',
           }}
         >
           <FaDownload />
@@ -89,7 +90,7 @@ export default function ShortlistedResumesPage() {
       </div>
 
       {shortlistedResumes.length > 0 ? (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
           <thead>
             <tr style={{ backgroundColor: '#eef2fb', borderBottom: '2px solid #d4def7' }}>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Name</th>
