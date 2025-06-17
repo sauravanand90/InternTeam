@@ -161,7 +161,7 @@ export default function ResumeResults() {
   }
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '100%', minHeight: '100vh', margin: '0 auto', backgroundColor:'rgb(231, 233, 245)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <button 
           className='res'
@@ -171,13 +171,13 @@ export default function ResumeResults() {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 16px',
-            backgroundColor: '#1f3d72',
+            backgroundColor: '#201783',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
             cursor: 'pointer',
             fontSize: '16px',
-            fontFamily: 'Georgia, Times New Roman, Times, serif',
+            fontFamily: 'Tinos, serif',
           }}
         >
           <FaArrowLeft /> Back to Dashboard
@@ -191,12 +191,14 @@ export default function ResumeResults() {
               padding: '8px',
               borderRadius: '6px',
               border: '1px solid #ccc',
-              fontFamily: 'Georgia, Times New Roman, Times, serif',
+              // backgroundColor: 'transparent',
+              fontFamily: 'Tinos, serif',
+              // color: 'white',
             }}
           >
-            <option value="score">Sort by Score</option>
-            <option value="experience">Sort by Experience</option>
-            <option value="name">Sort by Name</option>
+            <option value="score" >Sort by Score</option>
+            <option value="experience" >Sort by Experience</option>
+            <option value="name" >Sort by Name</option>
           </select>
           
           <button 
@@ -204,12 +206,12 @@ export default function ResumeResults() {
             onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
             style={{
               padding: '8px 16px',
-              backgroundColor: '#1f3d72',
+              backgroundColor: '#201783',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontFamily: 'Georgia, Times New Roman, Times, serif',
+              fontFamily: 'Tinos, serif',
             }}
           >
             {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
@@ -239,19 +241,19 @@ export default function ResumeResults() {
         </div>
       </div>
 
-      <h2 style={{ textAlign: 'center', color: '#2a4d8f', marginBottom: '20px' }}>Resume Analysis Results</h2>
+      <h2 style={{ textAlign: 'center', color: '#1b1b47', marginBottom: '20px', fontFamily: 'Times New Roman, Times, serif', }}>Resume Analysis Results</h2>
 
       {criteria && (
         <div style={{ 
-          backgroundColor: '#eef2fb',
+          backgroundColor: '#f5f9ff',
+          boxShadow: '0 0 8px rgba(0, 0, 0, 0.1)',
           padding: '15px',
-          borderRadius: '8px',
+          borderRadius: '12px',
           marginBottom: '20px',
-          border: '1px solid #d4def7'
         }}>
-          <h4 style={{ margin: '0 0 10px 0', color: '#2a4d8f', fontFamily: 'Paprika' }}>Job Criteria:</h4>
-          <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Skills:</strong> {criteria.skills.join(', ')}</p>
-          <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Location:</strong> {criteria.location}</p>
+          <h3 style={{ margin: '0 0 10px 0', color: '#1b1b47', fontFamily: 'Tinos, serif' }}>Job Criteria:</h3>
+          <p style={{ margin: '5px 0', color: '#1b1b47', fontFamily: 'Tinos, serif' }}><strong>Skills:</strong> {criteria.skills.join(', ')}</p>
+          <p style={{ margin: '5px 0', color: '#1b1b47', fontFamily: 'Tinos, serif' }}><strong>Location:</strong> {criteria.location}</p>
         </div>
       )}
 

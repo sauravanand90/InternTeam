@@ -49,7 +49,7 @@ export default function ShortlistedResumesPage() {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+    <div style={{ padding: '20px', maxWidth: '100%', minHeight: '100vh', margin: '0 auto', backgroundColor:'rgb(231, 233, 245)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <button className='res'
           onClick={() => navigate('/results')}
@@ -58,7 +58,7 @@ export default function ShortlistedResumesPage() {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 16px',
-            backgroundColor: '#1f3d72',
+            backgroundColor: '#201783',
             color: 'white',
             border: 'none',
             borderRadius: '6px',
@@ -69,7 +69,7 @@ export default function ShortlistedResumesPage() {
         >
           <FaArrowLeft /> Back to Results
         </button>
-        <h3 style={{ color: '#2a4d8f', margin: '0' }}>Shortlisted Resumes</h3>
+        <p style={{ textAlign:'center',color: '#1b1b47', margin: '0', fontFamily:'Times New Roman, Times, serif', fontSize:'40px', fontWeight:'bold' }}>Shortlisted Resumes</p>
         <button 
           onClick={handleDownloadExcel}
           style={{
@@ -90,9 +90,9 @@ export default function ShortlistedResumesPage() {
       </div>
 
       {shortlistedResumes.length > 0 ? (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', color:'white', marginTop: '20px', fontFamily: 'Tinos, serif', backgroundColor:'transparent' }}>
           <thead>
-            <tr style={{ backgroundColor: '#eef2fb', borderBottom: '2px solid #d4def7' }}>
+            <tr style={{ backgroundColor: 'transparent', borderBottom: '2px solid #d4def7' }}>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Name</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>File Name</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Score</th>
@@ -119,7 +119,7 @@ export default function ShortlistedResumesPage() {
           </tbody>
         </table>
       ) : (
-        <p style={{ textAlign: 'center', marginTop: '50px', fontSize: '18px', color: '#555' }}>No resumes have been shortlisted yet.</p>
+        <p style={{ textAlign: 'center', marginTop: '50px', fontSize: '18px', color: '#706565', fontFamily: 'Tinos, serif', marginLeft: '85px' }}>No resumes have been shortlisted yet.</p>
       )}
     </div>
   );

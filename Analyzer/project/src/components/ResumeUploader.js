@@ -141,7 +141,7 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
         <div style={{ marginBottom: '15px' }}>
           <i className="fas fa-cloud-upload-alt" style={{ fontSize: '48px', color: '#666' }}></i>
         </div>
-        <p style={{ marginBottom: '15px', color: '#666' }}>
+        <p style={{ marginBottom: '15px', color: '#706565', fontFamily: 'Tinos, serif' }}>
           Drag and drop PDF files or folders here, or
         </p>
         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -182,7 +182,7 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
           <label
             htmlFor="folder-input"
             style={{
-              backgroundColor: '#2196F3',
+              backgroundColor: '#1976D2',
               color: 'white',
               padding: '10px 20px',
               borderRadius: '5px',

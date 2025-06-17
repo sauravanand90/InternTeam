@@ -45,9 +45,10 @@ export default function LoginPage() {
 
   return (
     <div className="page">
-    <h1 className="main-title">RESUME ANALYZER</h1>
+    <h1 className="main-title">Resume Analyzer</h1>
       <div className="log" style={{ padding: "30px" }}>
-        <h2>Login</h2>
+        <h2>Welcome Back!</h2>
+        <h5>Sign in to access your dashboard.</h5>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             {/* <label><strong>Email</strong></label> */}

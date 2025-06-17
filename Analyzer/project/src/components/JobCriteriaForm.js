@@ -6,7 +6,7 @@ const skillOptions = [
   { value: 'javascript', label: 'JavaScript' }, { value: 'django', label: 'Django' },
   { value: 'react', label: 'React' }, { value: 'flask', label: 'Flask' },
   { value: 'nodejs', label: 'Node.js' }, { value: 'spring', label: 'Spring' },
-  { value: 'python', label: 'Python' }, { value: 'java', label: 'Java' }, 
+  { value: 'python', label: 'Python' }, { value: 'java', label: 'Java' },
   { value: 'c', label: 'C' }, { value: 'c++', label: 'C++' },
   { value: 'c#', label: 'C#' }, { value: 'git', label: 'Git' },
   { value: 'sql', label: 'SQL' }, { value: 'docker', label: 'Docker' },
@@ -40,22 +40,47 @@ export default function JobCriteriaForm({ onSubmit }) {
   };
 
   return (
+    <div className='criteria'>
     <form onSubmit={handleSubmit}>
-      <label htmlFor="skill-select"><strong>Select or Add Skills:</strong></label>
-      <Select
-        options={skillOptions}
-        isMulti
-        onChange={setSkills}
-        placeholder="Type or Select Skills..."
-      />
-      <label><strong>Enter Preferred Locations (comma separated):</strong></label>
-      <input id="location-input" placeholder="e.g. Bangalore, Hyderabad, Pune" onChange={e => setLocation(e.target.value)} />
+      <label htmlFor="skill-select">Select or Add Skills:</label>
+      <div className="custom-select-container">
+        <Select
+          options={skillOptions}
+          isMulti
+          onChange={setSkills}
+          placeholder="Type or Select Skills..."
+          styles={{
+            control: (base) => ({
+              ...base,
+              border: '1px solid white',
+              borderRadius: '8px',
+            }),
+            placeholder: (base) => ({
+              ...base,
+              fontFamily: 'Arial, Helvetica, sans-serif',
+              fontSize: '16px',
+            }),
+            menu: (base) => ({
+              ...base,
+              fontFamily: 'Arial, Helvetica, sans-serif',
+              fontSize: '14px',
+            }),
+          }}
+        />
+      </div>
+      <label>Enter Preferred Locations (comma separated):</label>
+      <input id="location-input" placeholder="e.g. Bangalore, Hyderabad, Pune" onChange={e => setLocation(e.target.value)}
+        style={{
+          border: '2px solid #ccc'
+        }} />
 
-      <label><strong>Experience Range (Years):</strong></label>
+      <label>Experience Range (Years):</label>
       <input type="number" placeholder="From" onChange={e => setMinExp(e.target.value)} />
       <input type="number" placeholder="To" onChange={e => setMaxExp(e.target.value)} />
-      
+
       <button className="submit" type="submit">Submit Criteria</button>
     </form>
+    </div>
   );
+  
 }

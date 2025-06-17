@@ -46,9 +46,10 @@ export default function RegisterPage() {
 
   return (
     <div className="page">
-    <h1 className="main-title">RESUME ANALYZER</h1>
-      <div className="log" style={{ padding: "30px" }}>
-        <h2>Register</h2>
+    <h1 className="main-title">Resume Analyzer</h1>
+      <div className="log" style={{ padding: "20px" }}>
+        <h2>Create an Account</h2>
+        <h5>Just a few quick details to get you onboard!</h5>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             {/* <label><strong>Name</strong></label> */}
