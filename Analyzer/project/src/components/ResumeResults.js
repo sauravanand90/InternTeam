@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaFilePdf, FaCheck, FaTimes, FaClipboardList } from 'react-icons/fa';
+import { FaArrowLeft, FaFilePdf, FaCheck, FaTimes, FaClipboardList, FaRedo } from 'react-icons/fa';
 import ResumeUploader from './ResumeUploader';
 
 export default function ResumeResults() {
@@ -10,8 +10,13 @@ export default function ResumeResults() {
   const [criteria, setCriteria] = useState(null);
   const [uploadedFilesMap, setUploadedFilesMap] = useState({});
   const [shortlistedCount, setShortlistedCount] = useState(0);
+  const [rejectedCount, setRejectedCount] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+
+  const allResumesRef = useRef(null);
+  const shortlistedResumesRef = useRef(null);
+  const rejectedResumesRef = useRef(null);
 
   useEffect(() => {
     const storedResults = sessionStorage.getItem('resumeResults');
@@ -22,38 +27,54 @@ export default function ResumeResults() {
       if (storedResults) {
         const parsedResults = JSON.parse(storedResults);
         console.log('ResumeResults: Parsed results from session storage:', parsedResults); // Debug log
-        // Ensure userActionStatus is null if not explicitly set in stored data
-        const initializedResults = parsedResults.map(resume => ({
-          ...resume,
-          userActionStatus: resume.userActionStatus || null
-        }));
+        const initializedResults = parsedResults.map(resume => {
+          const meetsExperience = checkExperienceCriteria(resume, JSON.parse(storedCriteria));
+          return {
+            ...resume,
+            userActionStatus: resume.userActionStatus || null,
+            initialStatus: meetsExperience ? (resume.initialStatus || 'Under Review') : 'Rejected'
+          };
+        });
         setResults(initializedResults);
-        setShortlistedCount(initializedResults.filter(r => r.userActionStatus === 'Shortlisted').length);
+        setShortlistedCount(initializedResults.filter(r => r.userActionStatus === 'Shortlisted' || r.initialStatus === 'Shortlisted').length);
+        setRejectedCount(initializedResults.filter(r => r.userActionStatus === 'Rejected' || r.initialStatus === 'Rejected').length);
       }
     } else {
-      // If no criteria found, redirect back to dashboard
       navigate('/dashboard');
     }
   }, [navigate]);
 
   const handleResultsReady = (newResults, currentCriteria, newUploadedFiles) => {
-    // Ensure newly uploaded resumes have userActionStatus initialized to null
-    const initializedNewResults = newResults.map(resume => ({
-      ...resume,
-      userActionStatus: null // Ensure new resumes start with null userActionStatus
-    }));
+    const initializedNewResults = newResults.map(resume => {
+      const meetsExperience = checkExperienceCriteria(resume, currentCriteria);
+      return {
+        ...resume,
+        userActionStatus: null,
+        initialStatus: meetsExperience ? 'Under Review' : 'Rejected'
+      };
+    });
 
-    setResults(initializedNewResults);
+    setResults(prevResults => {
+      const existingFileNames = new Set(prevResults.map(r => r.fileName));
+      const trulyNewResults = initializedNewResults.filter(r => !existingFileNames.has(r.fileName));
+      const combinedResults = [...prevResults, ...trulyNewResults];
+      sessionStorage.setItem('resumeResults', JSON.stringify(combinedResults));
+      
+      // Recalculate counts based on combined results' initialStatus and userActionStatus
+      const updatedShortlistedCount = combinedResults.filter(r => r.userActionStatus === 'Shortlisted' || (r.userActionStatus === null && r.initialStatus === 'Shortlisted')).length;
+      const updatedRejectedCount = combinedResults.filter(r => r.userActionStatus === 'Rejected' || (r.userActionStatus === null && r.initialStatus === 'Rejected')).length;
+      
+      setShortlistedCount(updatedShortlistedCount);
+      setRejectedCount(updatedRejectedCount);
+      return combinedResults;
+    });
     if (currentCriteria) {
       setCriteria(currentCriteria);
       sessionStorage.setItem('jobCriteria', JSON.stringify(currentCriteria));
     }
     if (newUploadedFiles) {
-      setUploadedFilesMap(newUploadedFiles);
+      setUploadedFilesMap(prevMap => ({ ...prevMap, ...newUploadedFiles }));
     }
-    // Update session storage with the new results that include userActionStatus
-    sessionStorage.setItem('resumeResults', JSON.stringify(initializedNewResults));
-    setShortlistedCount(initializedNewResults.filter(r => r.userActionStatus === 'Shortlisted').length);
   };
 
   const handlePreview = (fileName) => {
@@ -69,15 +90,12 @@ export default function ResumeResults() {
 
   const handleShortlist = (index) => {
     const newResults = [...results];
-    // Only change status if it's not already shortlisted by user action
     if (newResults[index].userActionStatus !== 'Shortlisted') {
-      // Decrement count if it was previously rejected by user action
-      if (newResults[index].userActionStatus === 'Rejected') {
-        setShortlistedCount(prevCount => prevCount + 1);
-      } else if (newResults[index].userActionStatus === null) {
-        setShortlistedCount(prevCount => prevCount + 1);
+      if (newResults[index].userActionStatus === 'Rejected' || newResults[index].initialStatus === 'Rejected') { // Check initialStatus too
+        setRejectedCount(prevCount => prevCount - 1); 
       }
       newResults[index].userActionStatus = 'Shortlisted';
+      setShortlistedCount(prevCount => prevCount + 1);
       setResults(newResults);
       sessionStorage.setItem('resumeResults', JSON.stringify(newResults));
       setShowPopup(true);
@@ -87,16 +105,20 @@ export default function ResumeResults() {
 
   const handleReject = (index) => {
     const newResults = [...results];
-    // Only change status if it's not already rejected by user action
-    if (newResults[index].userActionStatus !== 'Rejected') {
-      // Decrement count if it was previously shortlisted by user action
-      if (newResults[index].userActionStatus === 'Shortlisted') {
-        setShortlistedCount(prevCount => prevCount - 1);
-      }
+    // If already rejected by user, clicking cross will un-reject (move to null status)
+    if (newResults[index].userActionStatus === 'Rejected') {
+      newResults[index].userActionStatus = null; // Un-reject
+      setRejectedCount(prevCount => prevCount - 1);
+    } else if (newResults[index].userActionStatus === 'Shortlisted') {
+      setShortlistedCount(prevCount => prevCount - 1); 
       newResults[index].userActionStatus = 'Rejected';
-      setResults(newResults);
-      sessionStorage.setItem('resumeResults', JSON.stringify(newResults));
+      setRejectedCount(prevCount => prevCount + 1);
+    } else if (newResults[index].userActionStatus === null) {
+      newResults[index].userActionStatus = 'Rejected';
+      setRejectedCount(prevCount => prevCount + 1);
     }
+    setResults(newResults);
+    sessionStorage.setItem('resumeResults', JSON.stringify(newResults));
   };
 
   const formatExperience = (months) => {
@@ -113,25 +135,47 @@ export default function ResumeResults() {
   };
 
   const getCardColor = (result) => {
-    // If user has taken an action, prioritize that status
     if (result.userActionStatus === 'Shortlisted') {
-      return '#388E3C'; // A slightly different, darker green for user shortlisted
+      return 'green'; // green for user shortlisted
     }
-    if (result.userActionStatus === 'Rejected') {
-      return 'grey'; // Original Red for user rejected
+    if (result.userActionStatus === 'Rejected' || (result.userActionStatus === null && result.initialStatus === 'Rejected')) {
+      return 'grey'; 
     }
 
-    // Fallback to initial status if no user action
+    // Fallback to initialStatus if userActionStatus is null
     switch (result.initialStatus) {
       case 'Shortlisted':
-        return '#4CAF50'; // Original Green
+        return '#4CAF50'; 
       case 'Under Review':
-        return '#FFC107'; // Original Yellow
+        return '#FFC107'; 
       case 'Rejected':
-        return '#F44336'; // Original Red
+        return '#F44336'; 
       default:
-        return '#2196F3'; // Default blue (shouldn't be hit if initialStatus is always one of the above)
+        return '#2196F3'; 
     }
+  };
+
+  // New helper function to check experience criteria
+  const checkExperienceCriteria = (resume, criteria) => {
+    const min = criteria.minExp;
+    const max = criteria.maxExp;
+    const totalExperienceMonths = resume.totalExperience;
+
+    if (min === 0 && max === 0) {
+      return true; // No experience criteria set, so it always meets
+    }
+
+    const minMonths = min * 12;
+    const maxMonths = max * 12;
+
+    if (minMonths > 0 && maxMonths > 0) {
+      return totalExperienceMonths >= minMonths && totalExperienceMonths <= maxMonths;
+    } else if (minMonths > 0) {
+      return totalExperienceMonths >= minMonths;
+    } else if (maxMonths > 0) {
+      return totalExperienceMonths <= maxMonths;
+    }
+    return true; // Should not reach here if min or max are set, but for safety
   };
 
   const sortedResults = [...results].sort((a, b) => {
@@ -152,9 +196,24 @@ export default function ResumeResults() {
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
-  // Filter results based on userActionStatus
-  const underReviewResults = sortedResults.filter(r => r.userActionStatus === null || r.userActionStatus === 'Shortlisted');
-  const rejectedResults = sortedResults.filter(r => r.userActionStatus === 'Rejected');
+  const underReviewResults = sortedResults.filter(r => r.userActionStatus === null && r.initialStatus !== 'Rejected');
+  const shortlistedUserResults = sortedResults.filter(r => r.userActionStatus === 'Shortlisted' || (r.userActionStatus === null && r.initialStatus === 'Shortlisted'));
+  const rejectedUserResults = sortedResults.filter(r => r.userActionStatus === 'Rejected' || (r.userActionStatus === null && r.initialStatus === 'Rejected'));
+
+  const handleScrollToCategory = (category) => {
+    switch (category) {
+      case 'shortlisted':
+        shortlistedResumesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'rejected':
+        rejectedResumesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'all':
+      default:
+        allResumesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+    }
+  };
 
   if (!criteria) {
     return <div>Loading results...</div>;
@@ -239,8 +298,6 @@ export default function ResumeResults() {
         </div>
       </div>
 
-      <h2 style={{ textAlign: 'center', color: '#2a4d8f', marginBottom: '20px' }}>Resume Analysis Results</h2>
-
       {criteria && (
         <div style={{ 
           backgroundColor: '#eef2fb',
@@ -249,98 +306,115 @@ export default function ResumeResults() {
           marginBottom: '20px',
           border: '1px solid #d4def7'
         }}>
-          <h4 style={{ margin: '0 0 10px 0', color: '#2a4d8f', fontFamily: 'Paprika' }}>Job Criteria:</h4>
+          <h3 style={{ margin: '0 0 10px 0', color: '#2a4d8f', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>Job Criteria:</h3>
           <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Skills:</strong> {criteria.skills.join(', ')}</p>
           <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}><strong>Location:</strong> {criteria.location}</p>
+          {criteria.minExp !== undefined && criteria.maxExp !== undefined && (
+            <p style={{ margin: '5px 0', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
+              <strong>Experience:</strong> {criteria.minExp === 0 && criteria.maxExp === 0 ? 'Any' :
+                criteria.minExp > 0 && criteria.maxExp > 0 ? `${criteria.minExp} - ${criteria.maxExp} years` :
+                criteria.minExp > 0 ? `${criteria.minExp}+ years` :
+                `${criteria.maxExp} years or less`}
+            </p>
+          )}
         </div>
       )}
 
-      {criteria && (
-        <div style={{ marginBottom: '30px', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
-          <ResumeUploader criteria={criteria} onResultsReady={handleResultsReady} />
-        </div>
-      )}
+      <div style={{ marginBottom: '30px', fontFamily: 'Georgia, Times New Roman, Times, serif' }}>
+        <ResumeUploader 
+          criteria={criteria} 
+          onResultsReady={handleResultsReady} 
+          onScrollToCategory={handleScrollToCategory}
+          shortlistedCount={shortlistedCount}
+          rejectedCount={rejectedCount}
+          totalResumesCount={results.length}
+        />
+      </div>
 
+      <p ref={allResumesRef} style={{border: '2px dashed #2a4d8f', textAlign: 'center',fontFamily:'Georgia, Times New Roman, Times, serif',fontSize: '38px', color: '#2a4d8f', marginBottom: '20px' }}>Resumes Under Review</p>
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
         gap: '20px',
         padding: '20px 0'
       }}>
-        {underReviewResults.map((result, index) => (
-          <div
-            key={index}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: getCardColor(result),
-              color: 'white',
-              padding: '20px',
-              borderRadius: '10px',
-              boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-              fontSize: '15px',
-              fontFamily: 'Georgia, Times New Roman, Times, serif'
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <h3 style={{ margin: '0' }}>{result.name}</h3>
-              {result.fileName && (
-                <FaFilePdf 
-                  style={{ cursor: 'pointer', fontSize: '24px', color: 'white' }} 
-                  onClick={() => handlePreview(result.fileName)}
-                  title="Preview PDF"
+        {underReviewResults.length > 0 ? (
+          underReviewResults.map((result, index) => (
+            <div
+              key={result.fileName}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                backgroundColor: getCardColor(result),
+                color: 'white',
+                padding: '20px',
+                borderRadius: '10px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                fontSize: '15px',
+                fontFamily: 'Georgia, Times New Roman, Times, serif'
+              }}
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                <h3 style={{ margin: '0' }}>{result.name}</h3>
+                {result.fileName && (
+                  <FaFilePdf 
+                    style={{ cursor: 'pointer', fontSize: '24px', color: 'white' }} 
+                    onClick={() => handlePreview(result.fileName)}
+                    title="Preview PDF"
+                  />
+                )}
+              </div>
+              {/* <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p> */}
+              <p style={{ margin: '5px 0' }}><strong>Score:</strong> {result.score}%</p>
+              <p style={{ margin: '5px 0' }}><strong>Total Experience:</strong> {formatExperience(result.totalExperience)}</p>
+              <div style={{ margin: '10px 0' }}>
+                <strong style={{ marginRight: '5px' }}>Matched Skills:</strong>
+                <span>{result.matchedSkills.join(', ') || 'No skills matched'}</span>
+              </div>
+              <div style={{ margin: '5px 0' }}>
+                <strong style={{ marginRight: '5px' }}>Location:</strong>
+                <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                gap: '10px',
+                marginTop: 'auto',
+                paddingTop: '10px',
+                borderTop: '1px solid rgba(255,255,255,0.2)'
+              }}>
+                <FaTimes 
+                  className="icon-cross" 
+                  style={{ cursor: 'pointer', fontSize: '24px' }} 
+                  onClick={() => handleReject(results.findIndex(r => r.fileName === result.fileName))}
+                  title="Reject Resume"
                 />
-              )}
+                <FaCheck 
+                  className="icon-tick" 
+                  style={{ cursor: 'pointer', fontSize: '24px' }} 
+                  onClick={() => handleShortlist(results.findIndex(r => r.fileName === result.fileName))}
+                  title="Shortlist Resume"
+                />
+              </div>
             </div>
-            <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p>
-            <p style={{ margin: '5px 0' }}><strong>Score:</strong> {result.score}%</p>
-            <p style={{ margin: '5px 0' }}><strong>Total Experience:</strong> {formatExperience(result.totalExperience)}</p>
-            <div style={{ margin: '10px 0' }}>
-              <strong style={{ marginRight: '5px' }}>Matched Skills:</strong>
-              <span>{result.matchedSkills.join(', ') || 'No skills matched'}</span>
-            </div>
-            <div style={{ margin: '5px 0' }}>
-              <strong style={{ marginRight: '5px' }}>Location:</strong>
-              <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
-            </div>
-            {/* Tick and Cross Icons at the bottom */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '10px',
-              marginTop: 'auto', // Pushes this div to the bottom
-              paddingTop: '10px', // Add some space from content above
-              borderTop: '1px solid rgba(255,255,255,0.2)' // Optional separator line
-            }}>
-              <FaCheck 
-                className="icon-tick" 
-                style={{ cursor: 'pointer', fontSize: '24px' }} 
-                onClick={() => handleShortlist(results.findIndex(r => r.fileName === result.fileName))}
-                title="Shortlist Resume"
-              />
-              <FaTimes 
-                className="icon-cross" 
-                style={{ cursor: 'pointer', fontSize: '24px' }} 
-                onClick={() => handleReject(results.findIndex(r => r.fileName === result.fileName))}
-                title="Reject Resume"
-              />
-            </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center', fontSize: '18px', color: '#555' }}>No resumes under review.</p>
+        )}
       </div>
 
-      {rejectedResults.length > 0 && (
+      {shortlistedUserResults.length > 0 && (
         <div style={{ marginTop: '40px' }}>
-          <h2 style={{ textAlign: 'center', color: '#dc3545', marginBottom: '20px' }}>Rejected Resumes</h2>
+          <p ref={shortlistedResumesRef} style={{border: '2px dashed green', textAlign: 'center',fontFamily:'Georgia, Times New Roman, Times, serif',fontSize: '38px', color: 'green', marginBottom: '20px' }}>Shortlisted Resumes</p>
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
             gap: '20px',
             padding: '20px 0'
           }}>
-            {rejectedResults.map((result, index) => (
+            {shortlistedUserResults.map((result, index) => (
               <div
-                key={index}
+                key={result.fileName}
                 style={{
                   display: 'flex',
                   flexDirection: 'column',
@@ -362,7 +436,7 @@ export default function ResumeResults() {
                     />
                   )}
                 </div>
-                <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p>
+                {/* <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p> */}
                 <p style={{ margin: '5px 0' }}><strong>Score:</strong> {result.score}%</p>
                 <p style={{ margin: '5px 0' }}><strong>Total Experience:</strong> {formatExperience(result.totalExperience)}</p>
                 <div style={{ margin: '10px 0' }}>
@@ -373,7 +447,6 @@ export default function ResumeResults() {
                   <strong style={{ marginRight: '5px' }}>Location:</strong>
                   <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
                 </div>
-                {/* Tick icon for Rejected resumes to move them back */}
                 <div style={{
                   display: 'flex',
                   justifyContent: 'flex-end',
@@ -382,11 +455,76 @@ export default function ResumeResults() {
                   paddingTop: '10px',
                   borderTop: '1px solid rgba(255,255,255,0.2)'
                 }}>
-                  <FaCheck 
-                    className="icon-tick" 
-                    style={{ cursor: 'pointer', fontSize: '24px' }} 
-                    onClick={() => handleShortlist(results.findIndex(r => r.fileName === result.fileName))}
-                    title="Move to Shortlisted/Under Review"
+                  <FaTimes 
+                    className="icon-cross" 
+                    style={{ cursor: 'pointer', fontSize: '24px'}} 
+                    onClick={() => handleReject(results.findIndex(r => r.fileName === result.fileName))}
+                    title="Reject Resume"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {rejectedUserResults.length > 0 && (
+        <div style={{marginTop: '40px' }}>
+          <p ref={rejectedResumesRef} style={{border: '2px dashed #F44336', textAlign: 'center',fontFamily:'Georgia, Times New Roman, Times, serif', fontSize:'38px', color: '#F44336', marginBottom: '20px' }}>Rejected Resumes</p>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', 
+            gap: '20px',
+            padding: '20px 0'
+          }}>
+            {rejectedUserResults.map((result, index) => (
+              <div
+                key={result.fileName}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  backgroundColor: getCardColor(result),
+                  color: 'white',
+                  padding: '20px',
+                  borderRadius: '10px',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  fontSize: '15px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                  <h3 style={{ margin: '0' }}>{result.name}</h3>
+                  {result.fileName && (
+                    <FaFilePdf 
+                      style={{ cursor: 'pointer', fontSize: '24px', color: 'white' }} 
+                      onClick={() => handlePreview(result.fileName)}
+                      title="Preview PDF"
+                    />
+                  )}
+                </div>
+                {/* <p style={{ margin: '5px 0' }}><strong>File:</strong> {result.fileName}</p> */}
+                <p style={{ margin: '5px 0' }}><strong>Score:</strong> {result.score}%</p>
+                <p style={{ margin: '5px 0' }}><strong>Total Experience:</strong> {formatExperience(result.totalExperience)}</p>
+                <div style={{ margin: '10px 0' }}>
+                  <strong style={{ marginRight: '5px' }}>Matched Skills:</strong>
+                  <span>{result.matchedSkills.join(', ') || 'No skills matched'}</span>
+                </div>
+                <div style={{ margin: '5px 0' }}>
+                  <strong style={{ marginRight: '5px' }}>Location:</strong>
+                  <span>{result.matchedLocation.join(', ') || 'No location matched'}</span>
+                </div>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  gap: '10px',
+                  marginTop: 'auto',
+                  paddingTop: '10px',
+                  borderTop: '1px solid rgba(255,255,255,0.2)'
+                }}>
+                  <FaRedo 
+                    className="icon-redo" 
+                    style={{ cursor: 'pointer', fontSize: '24px'}}
+                    onClick={() => handleReject(results.findIndex(r => r.fileName === result.fileName))}
+                    title="Move to All Resumes"
                   />
                 </div>
               </div>

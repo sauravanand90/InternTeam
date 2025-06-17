@@ -19,7 +19,7 @@ export default function ShortlistedResumesPage() {
   const handleDownloadExcel = () => {
     const data = shortlistedResumes.map(resume => ({
       Name: resume.name,
-      FileName: resume.fileName,
+      // FileName: resume.fileName,
       Score: `${resume.score}%`,
       TotalExperience: formatExperience(resume.totalExperience),
       MatchedSkills: resume.matchedSkills.join(', '),
@@ -94,7 +94,7 @@ export default function ShortlistedResumesPage() {
           <thead>
             <tr style={{ backgroundColor: '#eef2fb', borderBottom: '2px solid #d4def7' }}>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Name</th>
-              <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>File Name</th>
+              {/* <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>File Name</th> */}
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Score</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Experience</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Matched Skills</th>
@@ -107,7 +107,7 @@ export default function ShortlistedResumesPage() {
             {shortlistedResumes.map((resume, index) => (
               <tr key={index} style={{ borderBottom: '1px solid #eee', backgroundColor: index % 2 === 0 ? '#fff' : '#f9f9f9' }}>
                 <td style={{ padding: '12px', color: '#333' }}>{resume.name}</td>
-                <td style={{ padding: '12px', color: '#333' }}>{resume.fileName}</td>
+                {/* <td style={{ padding: '12px', color: '#333' }}>{resume.fileName}</td> */}
                 <td style={{ padding: '12px', color: '#333' }}>{resume.score}%</td>
                 <td style={{ padding: '12px', color: '#333' }}>{formatExperience(resume.totalExperience)}</td>
                 <td style={{ padding: '12px', color: '#333' }}>{resume.matchedSkills.join(', ') || 'N/A'}</td>

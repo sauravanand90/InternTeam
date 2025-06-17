@@ -42,7 +42,7 @@ async function getAllPDFFilesFromItems(items) {
   return pdfFiles;
 }
 
-export default function ResumeUploader({ criteria, onResultsReady }) {
+export default function ResumeUploader({ criteria, onResultsReady, onScrollToCategory, shortlistedCount, rejectedCount, totalResumesCount }) {
   const [loading, setLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState({});
   const [isDragging, setIsDragging] = useState(false);
@@ -199,6 +199,52 @@ export default function ResumeUploader({ criteria, onResultsReady }) {
 
         {loading && <p className="loading">Processing resumes...</p>}
       </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '20px', marginTop: '20px' }}>
+        <button 
+          onClick={() => onScrollToCategory('shortlisted')}
+          style={{
+            backgroundColor: '#4CAF50',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'background-color 0.3s'
+          }} onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'} onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}>
+          Shortlisted Resumes ({shortlistedCount})
+        </button>
+        <button 
+          onClick={() => onScrollToCategory('rejected')}
+          style={{
+            backgroundColor: '#f44336',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'background-color 0.3s'
+          }} onMouseOver={(e) => e.target.style.backgroundColor = '#da190b'} onMouseOut={(e) => e.target.style.backgroundColor = '#f44336'}>
+          Rejected Resumes ({rejectedCount})
+        </button>
+        <button 
+          // onClick={() => onScrollToCategory('all')}
+          style={{
+            backgroundColor: '#1956c4',
+            color: 'white',
+            padding: '10px 20px',
+            borderRadius: '5px',
+            border: 'none',
+            cursor: 'pointer',
+            fontSize: '16px',
+            transition: 'background-color 0.3s'
+          }} 
+          // onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'} onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
+          >
+          Total Resumes ({totalResumesCount})
+        </button>
+      </div>
     </>
   );
 }
@@ -219,42 +265,118 @@ async function extractTextFromPDF(file) {
 }
 
 function extractName(text) {
-    const STOP_WORDS = ['engineer', 'software', 'associate', 'junior', 'street', 'location', 'greater', 'experienced', 'intern', 'contact', 'email', 'linkedin', 'phone', 'education', 'skills'];
-    const words = text
-        .slice(0, 300) // Only the top part of the resume
-        .replace(/\s{2,}/g, ' ') // Normalize extra spaces
-        .trim()
-        .split(/\s+/);
- 
+    const STOP_WORDS = [
+        'engineer', 'software', 'associate', 'junior', 'street', 'location', 'greater',
+        'experienced', 'intern', 'contact', 'email', 'linkedin', 'phone', 'education',
+        'skills', 'resume', 'cv', 'curriculum', 'vitae', 'profile', 'professional',
+        'summary', 'objective', 'career', 'experience', 'work', 'history',
+        'mid-level', 'mid', 'level', 'senior', 'lead', 'team', 'manager', 'specialist',
+        'analyst', 'developer', 'designer', 'consultant', 'coordinator', 'administrator',
+        'assistant', 'executive', 'director', 'vice', 'president', 'chief', 'and'
+    ];
+
+    const preprocessedText = text
+        .slice(0, 500)
+        .replace(/[^\w\s.-]/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
+    const words = preprocessedText.split(/\s+/);
     let nameParts = [];
- 
+    let foundName = false;
+
     for (let i = 0; i < words.length; i++) {
-        const word = words[i].replace(/[^A-Za-z]/g, '');
- 
+        const word = words[i].trim();
         if (!word) continue;
- 
+
         const lower = word.toLowerCase();
-        const isStopWord = STOP_WORDS.includes(lower);
-        const isValidNamePart = /^[A-Z][a-z]*$/.test(word) || /^[A-Z]{2,}$/.test(word);
- 
-        if (isStopWord) break;
- 
-        if (isValidNamePart) {
+        
+        if (STOP_WORDS.includes(lower)) {
+            if (foundName) break;
+            continue;
+        }
+
+        if (/^[A-Z][a-z]*$/.test(word) ||
+            /^[A-Z]{2,}$/.test(word) ||
+            /^[A-Z]\.$/.test(word) ||
+            /^[A-Z]$/.test(word) ||
+            /^[A-Z][a-z]*-[A-Z][a-z]*$/.test(word)) {
+            
             nameParts.push(word);
-        } else if (nameParts.length > 0) {
+            foundName = true;
+        } else if (foundName) {
             break;
         }
     }
- 
-    // Reconstruct spaced names like T I N A → TINA
-    let combinedName = nameParts.join(' ').trim();
- 
-    // If the name looks like it's all single letters (e.g., T I N A C O O K), merge them
-    if (/^([A-Z])(\s[A-Z]){2,}$/.test(combinedName)) {
-        combinedName = combinedName.replace(/\s/g, '');
+
+    let processedNameParts = [];
+    let currentBlock = [];
+
+    for (let i = 0; i < nameParts.length; i++) {
+        const part = nameParts[i];
+        if (/^[A-Z]$/.test(part)) {
+            currentBlock.push(part);
+        } else {
+            if (currentBlock.length > 0) {
+                if (currentBlock.length > 1) {
+                    processedNameParts.push(currentBlock.join(''));
+                } else {
+                    processedNameParts.push(currentBlock[0]);
+                }
+                currentBlock = [];
+            }
+            processedNameParts.push(part);
+        }
     }
-    //console.log(combinedName)
-    return combinedName || 'Unknown';
+
+    if (currentBlock.length > 0) {
+        if (currentBlock.length > 1) {
+            processedNameParts.push(currentBlock.join(''));
+        } else {
+            processedNameParts.push(currentBlock[0]);
+        }
+    }
+
+    let combinedName = processedNameParts.join(' ').trim();
+
+    // Handle true initials (e.g., J K L -> J. K. L.)
+    // This applies if the name still looks like space-separated single letters
+    if (combinedName.split(' ').every(part => /^[A-Z]$/.test(part) || /^[A-Z]\.$/.test(part)) && combinedName.split(' ').length >= 2) {
+        combinedName = combinedName.split(' ').map(part => {
+            if (/^[A-Z]$/.test(part)) return part + '.';
+            return part;
+        }).join(' ');
+    }
+
+    // Handle capitalization for all name parts, including special prefixes like Mc/Mac
+    combinedName = combinedName
+        .split(' ')
+        .map(word => {
+            if (/^[A-Z]\.$/.test(word)) return word; // Keep initials with periods as is
+            
+            const lowerWord = word.toLowerCase();
+            if (lowerWord.startsWith('mc') && word.length > 2) {
+                return 'Mc' + word.charAt(2).toUpperCase() + word.slice(3).toLowerCase();
+            }
+            if (lowerWord.startsWith('mac') && word.length > 3) {
+                return 'Mac' + word.charAt(3).toUpperCase() + word.slice(4).toLowerCase();
+            }
+            // For other words, ensure first letter is capitalized, rest lowercase
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(' ');
+
+    // Handle hyphenated names (e.g., mary-jane -> Mary-Jane)
+    combinedName = combinedName.replace(/([A-Za-z]+)-([A-Za-z]+)/g, (_, p1, p2) => 
+        p1.charAt(0).toUpperCase() + p1.slice(1).toLowerCase() + '-' + p2.charAt(0).toUpperCase() + p2.slice(1).toLowerCase()
+    );
+
+    // Final validation
+    if (!combinedName || combinedName.length < 2 || combinedName.toLowerCase() === 'unknown') {
+        return 'Unknown';
+    }
+    
+    return combinedName;
 }
 
 function extractExperience(text) {
