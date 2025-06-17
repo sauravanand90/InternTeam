@@ -196,6 +196,11 @@ form .css-1pahdxg-control:focus {
   border-radius: 6px;
 }
 
+.pdf:hover{
+  transform: scale(1.2);
+    cursor: pointer;
+}
+
 button:hover {
   background-color: #1f3d72;
 }
@@ -244,20 +249,17 @@ button:hover {
 /* Icon hover effects */
 .icon-tick {
   color: white;
-  transition: color 0.1s ease;
-}
-
-.icon-tick:hover {
-  color: #4CAF50;
-  /* Green */
 }
 
 .icon-cross {
   color: white;
-  transition: color 0.3s ease;
 }
 
-.icon-cross:hover {
-  color: #F44336;
-  /* Red */
+.icon-redo {
+  color: white;
+}
+
+.icon-tick:hover, .icon-cross:hover, .icon-redo:hover{
+  transform: scale(1.2);
+    cursor: pointer;
 }

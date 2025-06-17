@@ -19,7 +19,7 @@ export default function ShortlistedResumesPage() {
   const handleDownloadExcel = () => {
     const data = shortlistedResumes.map(resume => ({
       Name: resume.name,
-      FileName: resume.fileName,
+      // FileName: resume.fileName,
       Score: `${resume.score}%`,
       TotalExperience: formatExperience(resume.totalExperience),
       MatchedSkills: resume.matchedSkills.join(', '),
@@ -64,12 +64,12 @@ export default function ShortlistedResumesPage() {
             borderRadius: '6px',
             cursor: 'pointer',
             fontSize: '16px',
-            fontFamily: 'Georgia, Times New Roman, Times, serif'
+            fontFamily: 'Tinos, serif'
           }}
         >
           <FaArrowLeft /> Back to Results
         </button>
-        <p style={{ textAlign:'center',color: '#1b1b47', margin: '0', fontFamily:'Times New Roman, Times, serif', fontSize:'40px', fontWeight:'bold' }}>Shortlisted Resumes</p>
+        <p style={{ textAlign:'center',color: '#2a4d8f', margin: '0', fontFamily:'Times New Roman, Times, serif', fontSize:'35px', fontWeight:'bold' }}>Shortlisted Resumes</p>
         <button 
           onClick={handleDownloadExcel}
           style={{
@@ -90,11 +90,11 @@ export default function ShortlistedResumesPage() {
       </div>
 
       {shortlistedResumes.length > 0 ? (
-        <table style={{ width: '100%', borderCollapse: 'collapse', color:'white', marginTop: '20px', fontFamily: 'Tinos, serif', backgroundColor:'transparent' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', color:'white', marginTop: '20px', fontFamily: 'Tinos, serif', backgroundColor:'transparent', border:'2px solid #2a4d8f' }}>
           <thead>
-            <tr style={{ backgroundColor: 'transparent', borderBottom: '2px solid #d4def7' }}>
+            <tr style={{ backgroundColor: 'transparent', borderBottom: '2px solid #2a4d8f' }}>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Name</th>
-              <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>File Name</th>
+              {/* <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>File Name</th> */}
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Score</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Experience</th>
               <th style={{ padding: '12px', textAlign: 'left', color: '#2a4d8f' }}>Matched Skills</th>
@@ -107,7 +107,7 @@ export default function ShortlistedResumesPage() {
             {shortlistedResumes.map((resume, index) => (
               <tr key={index} style={{ borderBottom: '1px solid #eee', backgroundColor: index % 2 === 0 ? '#fff' : '#f9f9f9' }}>
                 <td style={{ padding: '12px', color: '#333' }}>{resume.name}</td>
-                <td style={{ padding: '12px', color: '#333' }}>{resume.fileName}</td>
+                {/* <td style={{ padding: '12px', color: '#333' }}>{resume.fileName}</td> */}
                 <td style={{ padding: '12px', color: '#333' }}>{resume.score}%</td>
                 <td style={{ padding: '12px', color: '#333' }}>{formatExperience(resume.totalExperience)}</td>
                 <td style={{ padding: '12px', color: '#333' }}>{resume.matchedSkills.join(', ') || 'N/A'}</td>
