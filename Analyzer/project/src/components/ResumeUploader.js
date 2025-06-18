@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import pdfjsWorker from 'pdfjs-dist/build/pdf.worker.entry';
+import { FaFileAlt } from 'react-icons/fa';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -228,22 +229,20 @@ export default function ResumeUploader({ criteria, onResultsReady, onScrollToCat
           }} onMouseOver={(e) => e.target.style.backgroundColor = '#da190b'} onMouseOut={(e) => e.target.style.backgroundColor = '#f44336'}>
           Rejected Resumes ({rejectedCount})
         </button>
-        <button 
+        <div 
           // onClick={() => onScrollToCategory('all')}
           style={{
-            backgroundColor: '#1956c4',
-            color: 'white',
+            color: 'rgb(27, 27, 71)',
             padding: '10px 20px',
+            paddingLeft: '20px',
             borderRadius: '5px',
             border: 'none',
-            cursor: 'pointer',
-            fontSize: '16px',
-            transition: 'background-color 0.3s'
+            fontSize: '20px',
           }} 
           // onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'} onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
-          >
-          Total Resumes ({totalResumesCount})
-        </button>
+          ><FaFileAlt size={20} />Total Resumes
+           ({totalResumesCount})
+        </div>   
       </div>
     </>
   );

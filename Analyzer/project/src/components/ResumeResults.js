@@ -386,7 +386,7 @@ export default function ResumeResults() {
                 gap: '10px',
                 marginTop: 'auto',
                 paddingTop: '10px',
-                borderTop: '1px solid rgba(255,255,255,0.2)'
+                borderTop: '2px solid rgba(255,255,255,0.2)'
               }}>
                 <FaTimes 
                   className="icon-cross" 
@@ -462,7 +462,7 @@ export default function ResumeResults() {
                   gap: '10px',
                   marginTop: 'auto',
                   paddingTop: '10px',
-                  borderTop: '1px solid rgba(255,255,255,0.2)'
+                  borderTop: '2px solid rgba(255,255,255,0.2)'
                 }}>
                   <FaTimes 
                     className="icon-cross" 
@@ -531,7 +531,7 @@ export default function ResumeResults() {
                   gap: '10px',
                   marginTop: 'auto',
                   paddingTop: '10px',
-                  borderTop: '1px solid rgba(255,255,255,0.2)'
+                  borderTop: '2px solid rgba(255,255,255,0.2)'
                 }}>
                   <FaRedo 
                     className="icon-redo" 

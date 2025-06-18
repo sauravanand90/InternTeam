@@ -35,9 +35,10 @@
   100% { transform: rotate(360deg); }
 }
 
-.error {
+p.error {
   color: rgb(209, 21, 21) !important;
-  font-size: 0.85rem;
+  font-size: 15px !important;
+  font-family: "Tinos", serif;
   margin-top: 4px;
 }
 
