@@ -240,7 +240,7 @@ export default function ResumeUploader({ criteria, onResultsReady, onScrollToCat
             fontSize: '20px',
           }} 
           // onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'} onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
-          ><FaFileAlt size={20} />Total Resumes
+          ><FaFileAlt size={20} /> Total Resumes
            ({totalResumesCount})
         </div>   
       </div>
@@ -375,6 +375,10 @@ function extractName(text) {
         return 'Unknown';
     }
     
+    if (combinedName.length > 25) {
+        return combinedName.slice(0, 25) + '...';
+    }
+
     return combinedName;
 }
 

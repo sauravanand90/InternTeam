@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaArrowLeft, FaFilePdf, FaCheck, FaTimes, FaClipboardList, FaRedo } from 'react-icons/fa';
+import { FaArrowLeft, FaFilePdf, FaCheck, FaTimes, FaClipboardList, FaRedo, FaSortAmountUpAlt, FaSortAmountDownAlt } from 'react-icons/fa';
 import ResumeUploader from './ResumeUploader';
 
 export default function ResumeResults() {
@@ -271,9 +271,17 @@ export default function ResumeResults() {
               borderRadius: '6px',
               cursor: 'pointer',
               fontFamily: 'Tinos, serif',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '14px',
             }}
           >
-            {sortOrder === 'asc' ? '↑ Ascending' : '↓ Descending'}
+            {sortOrder === 'asc' ? (
+              <><FaSortAmountUpAlt style={{marginRight: '1px'}} />Asc</>
+            ) : (
+              <><FaSortAmountDownAlt style={{marginRight: '1px'}} />Desc</>
+            )}
           </button>
 
           <div 
