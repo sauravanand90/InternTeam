@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 // Validation functions
 const validateEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Basic email format
+  const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;  // Basic email format
   return emailRegex.test(email);
 };
 

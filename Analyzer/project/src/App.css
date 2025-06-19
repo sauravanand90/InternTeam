@@ -255,11 +255,15 @@ button:hover {
   color: white;
 }
 
-.icon-redo {
+.icon-redo-shortlisted {
   color: white;
 }
 
-.icon-tick:hover, .icon-cross:hover, .icon-redo:hover{
+.icon-redo-rejected {
+  color: white;
+}
+
+.icon-tick:hover, .icon-cross:hover, .icon-redo-shortlisted:hover, .icon-redo-rejected:hover {
   transform: scale(1.2);
     cursor: pointer;
 }

@@ -200,7 +200,21 @@ export default function ResumeUploader({ criteria, onResultsReady, onScrollToCat
 
         {loading && <p className="loading">Processing resumes...</p>}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '20px', marginTop: '20px' }}>
+      <hr style={{ margin: '20px 0', borderColor: '#ccc' }} />
+      <div style={{ display: 'flex', justifyContent: 'flex-start', gap: '10px', marginTop: '20px' }}>
+      <div 
+          // onClick={() => onScrollToCategory('all')}
+          style={{
+            color: 'rgb(27, 27, 71)',
+            padding: '10px 20px',
+            paddingLeft: '10px',
+            border: 'none',
+            fontSize: '20px',
+          }} 
+          // onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'} onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
+          ><FaFileAlt size={20} /> Total Resumes
+           - {totalResumesCount}
+        </div>   
         <button 
           onClick={() => onScrollToCategory('shortlisted')}
           style={{
@@ -213,7 +227,7 @@ export default function ResumeUploader({ criteria, onResultsReady, onScrollToCat
             fontSize: '16px',
             transition: 'background-color 0.3s'
           }} onMouseOver={(e) => e.target.style.backgroundColor = '#45a049'} onMouseOut={(e) => e.target.style.backgroundColor = '#4CAF50'}>
-          Shortlisted Resumes ({shortlistedCount})
+          Shortlisted Resumes - {shortlistedCount}
         </button>
         <button 
           onClick={() => onScrollToCategory('rejected')}
@@ -227,22 +241,8 @@ export default function ResumeUploader({ criteria, onResultsReady, onScrollToCat
             fontSize: '16px',
             transition: 'background-color 0.3s'
           }} onMouseOver={(e) => e.target.style.backgroundColor = '#da190b'} onMouseOut={(e) => e.target.style.backgroundColor = '#f44336'}>
-          Rejected Resumes ({rejectedCount})
+          Rejected Resumes - {rejectedCount}
         </button>
-        <div 
-          // onClick={() => onScrollToCategory('all')}
-          style={{
-            color: 'rgb(27, 27, 71)',
-            padding: '10px 20px',
-            paddingLeft: '20px',
-            borderRadius: '5px',
-            border: 'none',
-            fontSize: '20px',
-          }} 
-          // onMouseOver={(e) => e.target.style.backgroundColor = '#1976D2'} onMouseOut={(e) => e.target.style.backgroundColor = '#2196F3'}
-          ><FaFileAlt size={20} /> Total Resumes
-           ({totalResumesCount})
-        </div>   
       </div>
     </>
   );

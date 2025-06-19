@@ -166,17 +166,19 @@ export default function ShortlistedResumesPage() {
           </button>
           <button 
             onClick={handleDownloadExcel}
+            disabled={shortlistedResumes.length === 0}
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               padding: '8px 16px',
               backgroundColor: '#28a745',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
-              cursor: 'pointer',
+              cursor: shortlistedResumes.length === 0 ? 'not-allowed' : 'pointer',
               fontSize: '16px',
+              opacity: shortlistedResumes.length === 0 ? 0.5 : 1
             }}
           >
             <FaDownload />
