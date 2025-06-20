@@ -27,7 +27,7 @@ export default function LoginPage() {
     try {
       const res = await axios.post("http://localhost:5000/api/auth/login", formData);
       localStorage.setItem("token", res.data.token);
-     // alert(`${res.data.username} Logged in successfully!`);
+      // alert(`${res.data.username} Logged in successfully!`);
       navigate("/dashboard"); // or ResumeFilterPage
     } catch (err) {
       const errorMsg = err.response?.data?.message;
@@ -39,17 +39,20 @@ export default function LoginPage() {
         setErrors({ general: errorMsg || "Login failed" });
       }
     } finally {
-    setLoading(false);
+      setLoading(false);
     }
   };
 
   return (
     <div className="page">
-    <h1 className="main-title">Resume Analyzer</h1>
+      <h1 className="main-title">Resume Analyzer</h1>
       <div className="log" style={{ padding: "30px" }}>
         <h2>Welcome Back!</h2>
         <h5>Sign in to access your dashboard.</h5>
         <form onSubmit={handleSubmit}>
+          <div className="error-space top-error">
+          {errors.general && <p className="error">{errors.general}</p>}
+          </div>
           <div className="mb-3">
             {/* <label><strong>Email</strong></label> */}
             <input
@@ -74,20 +77,12 @@ export default function LoginPage() {
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
-          {errors.general && <p className="error">{errors.general}</p>}
+          {/* {errors.general && <p className="error">{errors.general}</p>} */}
           <button type="submit" className="sub-btn" disabled={loading}>
             Login
-            {loading && <span className="spinner"></span>}  
+            {loading && <span className="spinner"></span>}
           </button>
           <p>Don't have an account?  <a href="/">Register</a></p>
-          {/* <button
-            type="button"
-            className="log-btn"
-            onClick={() => navigate('/')}
-          >
-            Register
-          </button> */}
-          
         </form>
       </div>
     </div>

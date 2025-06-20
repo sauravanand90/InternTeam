@@ -51,6 +51,9 @@ export default function RegisterPage() {
         <h2>Create an Account</h2>
         <h5>Just a few quick details to get you onboard!</h5>
         <form onSubmit={handleSubmit}>
+          <div className="error-space top-error">
+          {errors.general && <p className="error">{errors.general}</p>}
+          </div>
           <div className="mb-3">
             {/* <label><strong>Name</strong></label> */}
             <input
@@ -89,16 +92,9 @@ export default function RegisterPage() {
             />
             {errors.password && <p className="error">{errors.password}</p>}
           </div>
-          {errors.general && <p className="error">{errors.general}</p>}
+          {/* {errors.general && <p className="error">{errors.general}</p>} */}
           <button type="submit" className="sub-btn">Register</button>
           <p>Already have an account?   <a href="/login">Login</a></p>
-          {/* <button
-            type="button"
-            className="log-btn"
-            onClick={() => navigate('/login')}
-          >
-            Login
-          </button> */}
         </form>
       </div>
     </div>
