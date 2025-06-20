@@ -50,11 +50,11 @@ export default function LoginPage() {
         <h2>Welcome Back!</h2>
         <h5>Sign in to access your dashboard.</h5>
         <form onSubmit={handleSubmit}>
-          <div className="error-space top-error">
+          {/* <div className="error-space top-error">
           {errors.general && <p className="error">{errors.general}</p>}
           {errors.email && <p className="error">{errors.email}</p>}
           {errors.password && <p className="error">{errors.password}</p>}
-          </div>
+          </div> */}
           <div className="mb-3">
             {/* <label><strong>Email</strong></label> */}
             <input
@@ -79,6 +79,11 @@ export default function LoginPage() {
             {/* {errors.password && <p className="error">{errors.password}</p>} */}
           </div>
           {/* {errors.general && <p className="error">{errors.general}</p>} */}
+          <div className="error-space2 top-error2">
+          {errors.general && <p className="error">{errors.general}</p>}
+          {errors.email && <p className="error">{errors.email}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
+          </div>
           <button type="submit" className="sub-btn" disabled={loading}>
             Login
             {loading && <span className="spinner"></span>}

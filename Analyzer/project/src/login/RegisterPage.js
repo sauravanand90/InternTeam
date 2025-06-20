@@ -51,12 +51,12 @@ export default function RegisterPage() {
         <h2>Create an Account</h2>
         <h5>Just a few quick details to get you onboard!</h5>
         <form onSubmit={handleSubmit}>
-          <div className="error-space top-error">
+          {/* <div className="error-space top-error">
           {errors.general && <p className="error">{errors.general}</p>}
           {errors.name && <p className="error">{errors.name}</p>}
           {errors.email && <p className="error">{errors.email}</p>}
           {errors.password && <p className="error">{errors.password}</p>}
-          </div>
+          </div> */}
           <div className="mb-3">
             {/* <label><strong>Name</strong></label> */}
             <input
@@ -96,6 +96,12 @@ export default function RegisterPage() {
             {/* {errors.password && <p className="error">{errors.password}</p>} */}
           </div>
           {/* {errors.general && <p className="error">{errors.general}</p>} */}
+          <div className="error-space top-error">
+          {errors.general && <p className="error">{errors.general}</p>}
+          {errors.name && <p className="error">{errors.name}</p>}
+          {errors.email && <p className="error">{errors.email}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
+          </div>
           <button type="submit" className="sub-btn">Register</button>
           <p>Already have an account?   <a href="/login">Login</a></p>
         </form>
