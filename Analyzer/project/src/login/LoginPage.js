@@ -52,6 +52,8 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           <div className="error-space top-error">
           {errors.general && <p className="error">{errors.general}</p>}
+          {errors.email && <p className="error">{errors.email}</p>}
+          {errors.password && <p className="error">{errors.password}</p>}
           </div>
           <div className="mb-3">
             {/* <label><strong>Email</strong></label> */}
@@ -63,10 +65,9 @@ export default function LoginPage() {
               onChange={handleChange}
               required
             />
-            {errors.email && <p className="error">{errors.email}</p>}
+            {/* {errors.email && <p className="error">{errors.email}</p>} */}
           </div>
           <div className="mb-3">
-            {/* <label><strong>Password</strong></label> */}
             <input
               type="password"
               name="password"
@@ -75,7 +76,7 @@ export default function LoginPage() {
               onChange={handleChange}
               required
             />
-            {errors.password && <p className="error">{errors.password}</p>}
+            {/* {errors.password && <p className="error">{errors.password}</p>} */}
           </div>
           {/* {errors.general && <p className="error">{errors.general}</p>} */}
           <button type="submit" className="sub-btn" disabled={loading}>
