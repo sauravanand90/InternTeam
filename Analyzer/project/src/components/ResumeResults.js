@@ -30,16 +30,15 @@ export default function ResumeResults() {
         const parsedResults = JSON.parse(storedResults);
         console.log('ResumeResults: Parsed results from session storage:', parsedResults); // Debug log
         const initializedResults = parsedResults.map(resume => {
-          const meetsExperience = checkExperienceCriteria(resume, JSON.parse(storedCriteria));
-          return {
-            ...resume,
-            userActionStatus: resume.userActionStatus || null,
-            initialStatus: meetsExperience ? (resume.initialStatus || 'Under Review') : 'Rejected'
-          };
+          if (!resume.initialStatus) {
+            const meetsExperience = checkExperienceCriteria(resume, JSON.parse(storedCriteria));
+            resume.initialStatus = meetsExperience ? 'Under Review' : 'Rejected';
+          }
+          return resume;
         });
         setResults(initializedResults);
-        setShortlistedCount(initializedResults.filter(r => r.userActionStatus === 'Shortlisted' || r.initialStatus === 'Shortlisted').length);
-        setRejectedCount(initializedResults.filter(r => r.userActionStatus === 'Rejected' || r.initialStatus === 'Rejected').length);
+        setShortlistedCount(initializedResults.filter(r => r.userActionStatus === 'Shortlisted' || (r.userActionStatus === null && r.initialStatus === 'Shortlisted')).length);
+        setRejectedCount(initializedResults.filter(r => r.userActionStatus === 'Rejected' || (r.userActionStatus === null && r.initialStatus === 'Rejected')).length);
       }
     } else {
       navigate('/dashboard');
@@ -227,10 +226,11 @@ export default function ResumeResults() {
     if (fromShortlisted && newResults[index].userActionStatus === 'Shortlisted') {
       setShortlistedCount(prev => Math.max(0, prev - 1));
     }
-    if (fromRejected && newResults[index].userActionStatus === 'Rejected') {
+    if (fromRejected && (newResults[index].userActionStatus === 'Rejected' || (newResults[index].userActionStatus === null && newResults[index].initialStatus === 'Rejected'))) {
       setRejectedCount(prev => Math.max(0, prev - 1));
     }
     newResults[index].userActionStatus = null;
+    newResults[index].initialStatus = 'Under Review'; // Force to under review
     setResults(newResults);
     sessionStorage.setItem('resumeResults', JSON.stringify(newResults));
     setShowRestorePopup(true);
@@ -530,7 +530,6 @@ export default function ResumeResults() {
               padding: '20px 0'
             }}>
               {rejectedUserResults.map((result, index) => {
-                const isExperienceMet = checkExperienceCriteria(result, criteria);
                 return (
                   <div
                     key={result.fileName}
@@ -576,9 +575,9 @@ export default function ResumeResults() {
                     }}>
                       <FaRedo 
                         className="icon-redo-rejected" 
-                        style={{ cursor: isExperienceMet ? 'pointer' : 'not-allowed', fontSize: '24px', opacity: isExperienceMet ? 1 : 0.5 }}
-                        onClick={isExperienceMet ? () => handleMoveToUnderReview(results.findIndex(r => r.fileName === result.fileName), false, true) : undefined}
-                        title={isExperienceMet ? "Move to Resumes Under Review" : "Does not meet experience criteria"}
+                        style={{ cursor: 'pointer', fontSize: '24px', opacity: 1 }}
+                        onClick={() => handleMoveToUnderReview(results.findIndex(r => r.fileName === result.fileName), false, true)}
+                        title="Move to Resumes Under Review"
                       />
                     </div>
                   </div>

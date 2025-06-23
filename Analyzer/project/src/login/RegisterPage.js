@@ -103,6 +103,7 @@ export default function RegisterPage() {
           {errors.password && <p className="error">{errors.password}</p>}
           </div>
           <button type="submit" className="sub-btn">Register</button>
+          <br />
           <p>Already have an account?   <a href="/login">Login</a></p>
         </form>
       </div>

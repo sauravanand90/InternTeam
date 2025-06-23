@@ -84,6 +84,7 @@ export default function LoginPage() {
           {errors.email && <p className="error">{errors.email}</p>}
           {errors.password && <p className="error">{errors.password}</p>}
           </div>
+          <br />
           <button type="submit" className="sub-btn" disabled={loading}>
             Login
             {loading && <span className="spinner"></span>}
